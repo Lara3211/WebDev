@@ -3,6 +3,7 @@ WebDev
 npx serve
 
 
+
 MAIN REQUIREMENTS
 
 IMPLEMENTED      ------------------------------------
@@ -44,6 +45,8 @@ NOT IMPLEMENTED   -----------------------------------
 • Generate pay slips
 
 • Loan 
+
+
 
 
 

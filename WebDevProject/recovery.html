@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulacan Polytechnic College Payroll System - Data Recovery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2 {
+            color: #006400;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            background-color: #006400;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            background-color: #004d00;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table th {
+            background-color: #f2f2f2;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        #dataDisplay {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bulacan Polytechnic College Payroll System</h1>
+        <h2>Data Recovery Tool</h2>
+        
+        <p>This tool will help you recover your existing data or copy it from your old files. Select an option below:</p>
+        
+        <button id="checkDataBtn" class="btn">Check Existing Data</button>
+        <button id="copyDataBtn" class="btn">Copy Data to Fixed Files</button>
+        <button id="exportDataBtn" class="btn">Export All Data</button>
+        <button id="importDataBtn" class="btn">Import Data</button>
+        
+        <div id="statusMessage" class="status" style="display: none;"></div>
+        
+        <div id="dataDisplay" style="display: none;">
+            <h3>Data Preview</h3>
+            <div id="dataContent"></div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <a href="fixed_index.html" class="btn">Go to Dashboard</a>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkDataBtn = document.getElementById('checkDataBtn');
+            const copyDataBtn = document.getElementById('copyDataBtn');
+            const exportDataBtn = document.getElementById('exportDataBtn');
+            const importDataBtn = document.getElementById('importDataBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            const dataDisplay = document.getElementById('dataDisplay');
+            const dataContent = document.getElementById('dataContent');
+            
+            // Check existing data
+            checkDataBtn.addEventListener('click', function() {
+                const storageData = getLocalStorageData();
+                
+                let message = "<h3>Local Storage Data Status:</h3>";
+                message += "<table>";
+                message += "<tr><th>Data Type</th><th>Status</th><th>Count</th></tr>";
+                
+                // Check employees
+                const employees = JSON.parse(localStorage.getItem('employees') || '[]');
+                message += `<tr><td>Employees</td><td>${employees.length > 0 ? 'Available' : 'Empty'}</td><td>${employees.length}</td></tr>`;
+                
+                // Check departments
+                const departments = JSON.parse(localStorage.getItem('departments') || '[]');
+                message += `<tr><td>Departments</td><td>${departments.length > 0 ? 'Available' : 'Empty'}</td><td>${departments.length}</td></tr>`;
+                
+                // Check attendance
+                const attendance = JSON.parse(localStorage.getItem('attendance') || '[]');
+                message += `<tr><td>Attendance Records</td><td>${attendance.length > 0 ? 'Available' : 'Empty'}</td><td>${attendance.length}</td></tr>`;
+                
+                // Check payroll
+                const payroll = JSON.parse(localStorage.getItem('payroll') || '[]');
+                message += `<tr><td>Payroll Records</td><td>${payroll.length > 0 ? 'Available' : 'Empty'}</td><td>${payroll.length}</td></tr>`;
+                
+                message += "</table>";
+                
+                // Display preview
+                if (employees.length > 0 || departments.length > 0 || attendance.length > 0 || payroll.length > 0) {
+                    message += "<p>Your data is available and ready to use in the fixed system!</p>";
+                    statusMessage.className = "status success";
+                } else {
+                    message += "<p>No data found in localStorage. You may need to initialize the system with sample data.</p>";
+                    statusMessage.className = "status error";
+                }
+                
+                statusMessage.innerHTML = message;
+                statusMessage.style.display = 'block';
+                
+                // Show data preview
+                showDataPreview(storageData);
+            });
+            
+            // Copy data to fixed files
+            copyDataBtn.addEventListener('click', function() {
+                // We don't need to actually copy anything since the fixed files are already configured
+                // to use the same localStorage keys
+                
+                statusMessage.innerHTML = "<h3>Success!</h3><p>Your data is already configured to work with the fixed HTML files. You can now use the improved system with your existing data.</p>";
+                statusMessage.className = "status success";
+                statusMessage.style.display = 'block';
+            });
+            
+            // Export data
+            exportDataBtn.addEventListener('click', function() {
+                const storageData = getLocalStorageData();
+                
+                // Create a data URI for the JSON file
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(storageData));
+                
+                // Create a download link
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "bpc_payroll_data_backup.json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+                
+                statusMessage.innerHTML = "<h3>Export Successful!</h3><p>Your data has been exported to a JSON file. Keep this file as a backup of your data.</p>";
+                statusMessage.className = "status success";
+                statusMessage.style.display = 'block';
+            });
+            
+            // Import data
+            importDataBtn.addEventListener('click', function() {
+                // Create a file input element
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.json';
+                fileInput.style.display = 'none';
+                document.body.appendChild(fileInput);
+                
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    
+                    if (file) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(event) {
+                            try {
+                                const data = JSON.parse(event.target.result);
+                                
+                                // Import data to localStorage
+                                if (data.employees) localStorage.setItem('employees', JSON.stringify(data.employees));
+                                if (data.departments) localStorage.setItem('departments', JSON.stringify(data.departments));
+                                if (data.attendance) localStorage.setItem('attendance', JSON.stringify(data.attendance));
+                                if (data.payroll) localStorage.setItem('payroll', JSON.stringify(data.payroll));
+                                
+                                statusMessage.innerHTML = "<h3>Import Successful!</h3><p>Your data has been imported and is ready to use.</p>";
+                                statusMessage.className = "status success";
+                                statusMessage.style.display = 'block';
+                                
+                                // Show data preview
+                                showDataPreview(data);
+                            } catch (error) {
+                                statusMessage.innerHTML = "<h3>Import Failed!</h3><p>Error reading the file: " + error.message + "</p>";
+                                statusMessage.className = "status error";
+                                statusMessage.style.display = 'block';
+                            }
+                        };
+                        
+                        reader.readAsText(file);
+                    }
+                    
+                    // Clean up
+                    fileInput.remove();
+                });
+                
+                fileInput.click();
+            });
+            
+            // Get all localStorage data
+            function getLocalStorageData() {
+                return {
+                    employees: JSON.parse(localStorage.getItem('employees') || '[]'),
+                    departments: JSON.parse(localStorage.getItem('departments') || '[]'),
+                    attendance: JSON.parse(localStorage.getItem('attendance') || '[]'),
+                    payroll: JSON.parse(localStorage.getItem('payroll') || '[]')
+                };
+            }
+            
+            // Show data preview
+            function showDataPreview(data) {
+                let preview = '';
+                
+                // Employees preview
+                if (data.employees && data.employees.length > 0) {
+                    preview += '<h4>Employees Sample (first 3):</h4>';
+                    preview += '<table>';
+                    preview += '<tr><th>ID</th><th>Name</th><th>Position</th><th>Department</th></tr>';
+                    
+                    const sampleEmployees = data.employees.slice(0, 3);
+                    sampleEmployees.forEach(emp => {
+                        preview += `<tr><td>${emp.id}</td><td>${emp.name}</td><td>${emp.position}</td><td>${emp.department}</td></tr>`;
+                    });
+                    
+                    preview += '</table>';
+                }
+                
+                // Departments preview
+                if (data.departments && data.departments.length > 0) {
+                    preview += '<h4>Departments Sample (first 3):</h4>';
+                    preview += '<table>';
+                    preview += '<tr><th>ID</th><th>Name</th><th>Description</th></tr>';
+                    
+                    const sampleDepts = data.departments.slice(0, 3);
+                    sampleDepts.forEach(dept => {
+                        preview += `<tr><td>${dept.id}</td><td>${dept.name}</td><td>${dept.description}</td></tr>`;
+                    });
+                    
+                    preview += '</table>';
+                }
+                
+                dataContent.innerHTML = preview;
+                dataDisplay.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+
+.banner-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    max-height: 300px;
+    object-fit: cover;
+    transition: all 0.3s ease-in-out;
+}
+.banner-img:hover {
+    transform: scale(1.05);
+}
+.banner-text {
+    margin-top: 10px;
+    font-style: italic;
+    color: #ffffff;
+}

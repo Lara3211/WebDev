@@ -7,13 +7,13 @@ MAIN REQUIREMENTS
 
 IMPLEMENTED      ------------------------------------
 
-• Admin 
+• Admin
 • Log in 
 • Manage employees (Add, edit, view employee profiles) 
 • Manage attendance of every employee 
 • Salary details 
 • Job designation, department 
-• Summary of attendance 
+• Summary of attendance
 • Notifications for pay dates
 
 • The daily rate varies for each employee.

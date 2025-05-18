@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="./css/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Inika:wght@400;700&display=swap" rel="stylesheet">
     <title>BPC Payroll System</title>
     <style>
         body {
-            background-image: url('/images/bpcschool.png');
+            background-image: url('./images/bpcschool.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -23,7 +23,7 @@
 <body>
     <div class="school-bg">
         <div class="header">
-            <img src="/images/bpclogo.png" alt="BPC School Logo">
+            <img src="./images/bpclogo.png" alt="BPC School Logo">
             <h1 class="inika">BULACAN POLYTECHNIC COLLEGE</h1>
         </div>
         <div class="center-wrapper">
@@ -54,19 +54,22 @@
         </div>
     </div>
 
+
+
+
 <script>
-const users = [
+window.users = [
     { 
         username: "admin", 
         password: "admin123" 
     },
     { 
-        username: "staff", 
-        password: "staff123" 
+        username: "adolf", 
+        password: "hitler123" 
     },
     { 
-        username: "user", 
-        password: "user123" 
+        username: "Migs", 
+        password: "migs123" 
     }
 ];
 
@@ -78,16 +81,16 @@ document.getElementById('password').addEventListener('input', function() {
     validateField('password');
 });
 
-function validateField(fieldId) {
-    const field = document.getElementById(fieldId);
-    const errorElement = document.getElementById(fieldId + '-error');
+function validateField(input) {
+    const inputfield = document.getElementById(input);
+    const errorElement = document.getElementById(input + '-error');
     
-    if (!field.value.trim()) {
-        field.classList.add('error');
+    if (!inputfield.value.trim()) {
+        inputfield.classList.add('error');
         errorElement.style.display = 'block';
         return false;
     } else {
-        field.classList.remove('error');
+        inputfield.classList.remove('error');
         errorElement.style.display = 'none';
         return true;
     }
@@ -115,7 +118,7 @@ function validate() {
     const user = users.find(u => u.username === username && u.password === password);
     
     if (user) {
-        window.location.href = "/index.html";
+        window.location.href = "./index.html";
     } else {
         document.getElementById('login-error').style.display = 'block';
     }

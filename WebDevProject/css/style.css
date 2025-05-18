@@ -167,7 +167,7 @@ img {
   transition: var(--transition);
   padding: 1rem;
   position: relative;
-  background-image: url("/images/bpcschool.png");
+  background-image: url("../images/bpcschool.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

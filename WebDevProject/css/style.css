@@ -115,8 +115,8 @@ img {
 }
 
 .menu-item i {
-  min-width: 20px;     /* Force icons to align */
-  text-align: center;  /* Align icon inside space */
+  min-width: 20px;  
+  text-align: center; 
 }
 
 .menu-text {
@@ -176,7 +176,7 @@ img {
   width: calc(100% - 250px);
 }
 
-/* Add an overlay to make content readable */
+
 .dashboard::before {
   content: "";
   position: absolute;
@@ -188,7 +188,7 @@ img {
   z-index: 1;
 }
 
-/* Make sure content is above the overlay */
+
 .dashboard > * {
   position: relative;
   z-index: 2;
@@ -698,24 +698,23 @@ table tr:hover {
     margin-right: 0.25rem;
   }
   
-  /* Improve form elements for mobile touch */
+
   .form-control {
     padding: 0.7rem;
-    font-size: 16px; /* Prevents iOS zoom on focus */
+    font-size: 16px; 
   }
   
   select.form-control {
     height: 42px;
   }
-  
-  /* Force better spacing for action buttons on mobile */
+
   .action-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
   
-  /* Fix modals on small screens */
+
   .modal-content {
     margin-top: 2%;
     padding: 1rem;
@@ -739,6 +738,10 @@ table tr:hover {
   
   .container, .content-area {
     padding: 0 !important;
+  }
+
+  .form-container {
+    display: none !important;
   }
 }
 

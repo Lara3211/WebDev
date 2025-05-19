@@ -1,79 +1,59 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Load reports data
     initReports();
-    
-    // Set up event listeners
     setupReportEvents();
 });
 
-// Initialize reports
 function initReports() {
-    // Set default report type and date range
     const reportType = document.getElementById('reportType');
     if (reportType) {
-        // Set default report type to Payroll Summary
         reportType.value = 'payroll';
-        
-        // Generate report based on default selection
         generateReport(reportType.value);
     }
 }
+/* initilizas the report
+*/
 
-// Set up event listeners for report actions
 function setupReportEvents() {
-    // Get report type select
     const reportType = document.getElementById('reportType');
     const dateRangeStart = document.getElementById('dateRangeStart');
     const dateRangeEnd = document.getElementById('dateRangeEnd');
     const generateReportBtn = document.getElementById('generateReportBtn');
-    
-    // Set default date range (current month)
     if (dateRangeStart && dateRangeEnd) {
         const today = new Date();
         const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        
         dateRangeStart.valueAsDate = firstDay;
         dateRangeEnd.valueAsDate = lastDay;
     }
-    
-    // Report type change event
     if (reportType) {
         reportType.addEventListener('change', function() {
             generateReport(this.value);
         });
     }
-    
-    // Generate report button click event
     if (generateReportBtn) {
         generateReportBtn.addEventListener('click', function() {
             const selectedReportType = reportType.value;
             generateReport(selectedReportType);
         });
     }
-    
-    // Print report button click event
     document.addEventListener('click', function(e) {
         if (e.target.id === 'printReportBtn') {
             window.print();
         }
     });
 }
+/*
+ * Events listeners for all elements in reports
+ * SETS data/ configueres data
+ * GUIDED
+ */
 
-// Generate report based on selected type
 function generateReport(reportType) {
-    // Get report container
     const reportContainer = document.getElementById('reportContainer');
     if (!reportContainer) return;
-    
-    // Get date range
     const dateRangeStart = document.getElementById('dateRangeStart').value;
     const dateRangeEnd = document.getElementById('dateRangeEnd').value;
-    
-    // Clear container
     reportContainer.innerHTML = '';
-    
-    // Generate selected report
     switch (reportType) {
         case 'payroll':
             generatePayrollSummaryReport(reportContainer, dateRangeStart, dateRangeEnd);
@@ -91,23 +71,21 @@ function generateReport(reportType) {
             reportContainer.innerHTML = '<p>Please select a report type.</p>';
     }
 }
+/*
+ * SELECTION FUCNTION
+ * switch case for each generateREPORT
+*/
 
-// Generate Payroll Summary Report
+
+
 function generatePayrollSummaryReport(container, startDate, endDate) {
-    // Get payroll data
     const payroll = JSON.parse(localStorage.getItem('payroll')) || [];
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    
-    // Filter payroll records within date range
     const filteredPayroll = payroll.filter(p => {
         const payDate = new Date(p.payDate);
         return payDate >= new Date(startDate) && payDate <= new Date(endDate);
     });
-    
-    // Sort by pay date
     filteredPayroll.sort((a, b) => new Date(a.payDate) - new Date(b.payDate));
-    
-    // Create report HTML
     let reportHTML = `
         <div class="report">
             <div class="report-header">
@@ -117,7 +95,6 @@ function generatePayrollSummaryReport(container, startDate, endDate) {
                 </div>
                 <button id="printReportBtn" class="btn btn-primary">Print Report</button>
             </div>
-            
             <div class="table-container">
                 <table>
                     <thead>
@@ -132,17 +109,11 @@ function generatePayrollSummaryReport(container, startDate, endDate) {
                     </thead>
                     <tbody>
     `;
-    
-    // Track totals
     let totalGross = 0;
     let totalDeductions = 0;
     let totalNet = 0;
-    
-    // Add rows for each payroll record
     filteredPayroll.forEach(record => {
-        // Find employee
         const employee = employees.find(emp => emp.id === record.employeeId);
-        
         if (employee) {
             reportHTML += `
                 <tr>
@@ -154,15 +125,11 @@ function generatePayrollSummaryReport(container, startDate, endDate) {
                     <td>${formatCurrency(record.netSalary)}</td>
                 </tr>
             `;
-            
-            // Update totals
             totalGross += record.baseSalary;
             totalDeductions += record.totalDeductions;
             totalNet += record.netSalary;
         }
     });
-    
-    // Add summary row
     reportHTML += `
                 </tbody>
                 <tfoot>
@@ -175,7 +142,6 @@ function generatePayrollSummaryReport(container, startDate, endDate) {
                 </tfoot>
             </table>
         </div>
-        
         <div class="report-summary">
             <p><strong>Total Records:</strong> ${filteredPayroll.length}</p>
             <p><strong>Total Gross Salary:</strong> ${formatCurrency(totalGross)}</p>
@@ -184,23 +150,22 @@ function generatePayrollSummaryReport(container, startDate, endDate) {
         </div>
     </div>
     `;
-    
-    // Set report HTML
     container.innerHTML = reportHTML;
 }
+/*
+ * Generates a payroll summary report >> still in testing
+ * *need to have someone on payroll
+ */
 
-// Generate Attendance Summary Report
+
 function generateAttendanceSummaryReport(container, startDate, endDate) {
-    // Get attendance data
     const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     
-    // Filter attendance records within date range
     const filteredAttendance = attendance.filter(a => {
         return a.date >= startDate && a.date <= endDate;
     });
     
-    // Group attendance by employee
     const attendanceByEmployee = {};
     
     employees.forEach(emp => {
@@ -213,13 +178,11 @@ function generateAttendanceSummaryReport(container, startDate, endDate) {
         };
     });
     
-    // Count attendance status for each employee
     filteredAttendance.forEach(record => {
         if (attendanceByEmployee[record.employeeId]) {
             if (record.status === 'Present') {
                 attendanceByEmployee[record.employeeId].present++;
                 
-                // Check if late (after 8:30 AM)
                 if (record.timeIn > '08:30') {
                     attendanceByEmployee[record.employeeId].late++;
                 }
@@ -231,19 +194,14 @@ function generateAttendanceSummaryReport(container, startDate, endDate) {
         }
     });
     
-    // Calculate working days in date range (excluding weekends)
-    const start = new Date(startDate);
-    const end = new Date(endDate);
     let workingDays = 0;
     
-    for (let day = new Date(start); day <= end; day.setDate(day.getDate() + 1)) {
-        // Skip weekends (0 is Sunday, 6 is Saturday)
+    for (let day = new Date(startDate); day <= new Date(endDate); day.setDate(day.getDate() + 1)) {
         if (day.getDay() !== 0 && day.getDay() !== 6) {
             workingDays++;
         }
     }
     
-    // Create report HTML
     let reportHTML = `
         <div class="report">
             <div class="report-header">
@@ -270,7 +228,6 @@ function generateAttendanceSummaryReport(container, startDate, endDate) {
                     <tbody>
     `;
     
-    // Add rows for each employee
     for (const empId in attendanceByEmployee) {
         const data = attendanceByEmployee[empId];
         const attendanceRate = (data.present / workingDays) * 100;
@@ -300,17 +257,17 @@ function generateAttendanceSummaryReport(container, startDate, endDate) {
     </div>
     `;
     
-    // Set report HTML
     container.innerHTML = reportHTML;
 }
+/*
+ * Generates an attendance summary report >> still in testing
+ * summary of absents >> still in testing
+ */
 
-// Generate Department Summary Report
 function generateDepartmentSummaryReport(container) {
-    // Get department and employee data
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     
-    // Group employees by department
     const empByDepartment = {};
     
     departments.forEach(dept => {
@@ -322,7 +279,6 @@ function generateDepartmentSummaryReport(container) {
         };
     });
     
-    // Assign employees to departments
     employees.forEach(emp => {
         if (empByDepartment[emp.department]) {
             empByDepartment[emp.department].employees.push(emp);
@@ -331,7 +287,6 @@ function generateDepartmentSummaryReport(container) {
         }
     });
     
-    // Create report HTML
     let reportHTML = `
         <div class="report">
             <div class="report-header">
@@ -356,11 +311,9 @@ function generateDepartmentSummaryReport(container) {
                     <tbody>
     `;
     
-    // Track totals
     let totalEmployees = 0;
     let totalSalaryBudget = 0;
     
-    // Add rows for each department
     departments.forEach(dept => {
         const data = empByDepartment[dept.name];
         const avgSalary = data.count > 0 ? data.totalSalary / data.count : 0;
@@ -375,15 +328,12 @@ function generateDepartmentSummaryReport(container) {
             </tr>
         `;
         
-        // Update totals
         totalEmployees += data.count;
         totalSalaryBudget += data.totalSalary;
     });
     
-    // Calculate overall average salary
     const overallAvgSalary = totalEmployees > 0 ? totalSalaryBudget / totalEmployees : 0;
     
-    // Add summary row
     reportHTML += `
                 </tbody>
                 <tfoot>
@@ -406,19 +356,20 @@ function generateDepartmentSummaryReport(container) {
     </div>
     `;
     
-    // Set report HTML
     container.innerHTML = reportHTML;
 }
+/*
+ * Sumary report for departments
+ * Displays statistics about each department including headcount, salary budget,
+ * and average salaries.
+ */
 
-// Generate Employee List Report
+
 function generateEmployeeListReport(container) {
-    // Get employee data
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     
-    // Sort employees by name
     const sortedEmployees = [...employees].sort((a, b) => a.name.localeCompare(b.name));
     
-    // Create report HTML
     let reportHTML = `
         <div class="report">
             <div class="report-header">
@@ -444,10 +395,8 @@ function generateEmployeeListReport(container) {
                     <tbody>
     `;
     
-    // Track totals
     let totalSalary = 0;
     
-    // Add rows for each employee
     sortedEmployees.forEach(emp => {
         reportHTML += `
             <tr>
@@ -460,14 +409,11 @@ function generateEmployeeListReport(container) {
             </tr>
         `;
         
-        // Update totals
         totalSalary += emp.salary;
     });
     
-    // Calculate average salary
     const avgSalary = employees.length > 0 ? totalSalary / employees.length : 0;
     
-    // Add summary row
     reportHTML += `
                 </tbody>
                 <tfoot>
@@ -488,6 +434,11 @@ function generateEmployeeListReport(container) {
     </div>
     `;
     
-    // Set report HTML
     container.innerHTML = reportHTML;
 }
+/*
+ * Lists employees
+ * 
+ */
+
+

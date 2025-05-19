@@ -1,23 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize local storage if needed
     initializeLocalStorage();
-    
-    // Load departments data
     loadDepartments();
-    
-    // Set up event listeners
     setupDepartmentEvents();
 });
 
-// Load departments from localStorage
 function loadDepartments() {
     const departmentsTable = document.querySelector('#departmentsTable');
     if (!departmentsTable) return;
     
-    // Get departments data
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     
-    // Clear existing table rows except the header
     while (departmentsTable.rows.length > 1) {
         departmentsTable.deleteRow(1);
     }
@@ -31,12 +23,9 @@ function loadDepartments() {
         return;
     }
     
-    // Get employees to count by department
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     
-    // Add table rows for each department
     departments.forEach(department => {
-        // Count employees in this department
         const employeeCount = employees.filter(emp => emp.department === department.name).length;
         
         const row = departmentsTable.insertRow();
@@ -52,41 +41,36 @@ function loadDepartments() {
         `;
     });
 }
+/*
+ * Loads department data from localStorage >> employee count in dep as well
+ */
 
-// Set up event listeners for department actions
 function setupDepartmentEvents() {
-    // Get form and buttons
     const addDepartmentForm = document.getElementById('addDepartmentForm');
     const addDepartmentBtn = document.getElementById('addDepartmentBtn');
     const departmentModal = document.getElementById('departmentModal');
     const departmentDetailsModal = document.getElementById('departmentDetailsModal');
     const closeModalBtns = document.querySelectorAll('.close-btn');
     
-    // Add department button event
     if (addDepartmentBtn) {
         addDepartmentBtn.addEventListener('click', function() {
-            // Reset form
             if (addDepartmentForm) {
                 addDepartmentForm.reset();
                 addDepartmentForm.dataset.mode = 'add';
                 addDepartmentForm.dataset.id = '';
                 
-                // Update modal title
                 const modalTitle = departmentModal.querySelector('.form-header h2');
                 if (modalTitle) {
                     modalTitle.textContent = 'Add New Department';
                 }
                 
-                // Show modal
                 departmentModal.style.display = 'block';
             }
         });
     }
     
-    // Close modal buttons event
     closeModalBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Find the parent modal of this close button
             const modal = this.closest('.modal');
             if (modal) {
                 modal.style.display = 'none';
@@ -94,65 +78,48 @@ function setupDepartmentEvents() {
         });
     });
     
-    // Click outside modal to close
     window.addEventListener('click', function(event) {
         if (event.target.classList.contains('modal')) {
             event.target.style.display = 'none';
         }
     });
     
-    // Form submit event
     if (addDepartmentForm) {
         addDepartmentForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Get form data
             const formData = new FormData(this);
             const departmentData = {
                 name: formData.get('name'),
                 description: formData.get('description')
             };
             
-            // Validate form data
-            if (!validateDepartmentForm(departmentData)) {
-                return;
-            }
-            
-            // Get mode (add or edit)
             const mode = this.dataset.mode;
             
             if (mode === 'add') {
-                // Add new department
                 addDepartment(departmentData);
             } else if (mode === 'edit') {
-                // Edit existing department
                 const id = parseInt(this.dataset.id);
                 editDepartment(id, departmentData);
             }
             
-            // Hide modal
             departmentModal.style.display = 'none';
             
-            // Reload departments
             loadDepartments();
         });
     }
     
-    // Delegate click events for action buttons
     document.addEventListener('click', function(e) {
-        // View button
         if (e.target.classList.contains('view-btn')) {
             const id = parseInt(e.target.dataset.id);
             viewDepartment(id);
         }
         
-        // Edit button
         if (e.target.classList.contains('edit-btn')) {
             const id = parseInt(e.target.dataset.id);
             openEditDepartmentForm(id);
         }
         
-        // Delete button
         if (e.target.classList.contains('delete-btn')) {
             if (confirm('Are you sure you want to delete this department?')) {
                 const id = parseInt(e.target.dataset.id);
@@ -162,42 +129,37 @@ function setupDepartmentEvents() {
         }
     });
 }
+/*
+ *event listenrers v.2
+ */
 
-// Add new department
 function addDepartment(departmentData) {
-    // Get existing departments
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     
-    // Check if department with the same name already exists
     const departmentExists = departments.some(dept => dept.name === departmentData.name);
     if (departmentExists) {
         alert('A department with this name already exists');
         return;
     }
     
-    // Generate new ID
     const id = generateId();
     
-    // Add ID to department data
     departmentData.id = id;
     
-    // Add to array
     departments.push(departmentData);
     
-    // Save to localStorage
     localStorage.setItem('departments', JSON.stringify(departments));
 }
+/*
+ * add to localstorage >> must check if same with other dep.
+ */
 
-// Edit department
 function editDepartment(id, departmentData) {
-    // Get existing departments
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     
-    // Find department index
     const index = departments.findIndex(dept => dept.id === id);
     
     if (index !== -1) {
-        // Check if we're changing the name and if the new name already exists
         const oldName = departments[index].name;
         const newName = departmentData.name;
         
@@ -208,24 +170,21 @@ function editDepartment(id, departmentData) {
                 return;
             }
             
-            // Update employee records with new department name
             updateEmployeeDepartments(oldName, newName);
         }
         
-        // Update department data, preserving the ID
         departments[index] = { ...departmentData, id: id };
         
-        // Save to localStorage
         localStorage.setItem('departments', JSON.stringify(departments));
     }
 }
+/*
+ * update localstorage department info <>
+ */
 
-// Update employee records when department name changes
 function updateEmployeeDepartments(oldName, newName) {
-    // Get existing employees
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     
-    // Update department name for affected employees
     const updatedEmployees = employees.map(emp => {
         if (emp.department === oldName) {
             return { ...emp, department: newName };
@@ -233,20 +192,19 @@ function updateEmployeeDepartments(oldName, newName) {
         return emp;
     });
     
-    // Save to localStorage
     localStorage.setItem('employees', JSON.stringify(updatedEmployees));
 }
+/* ERROR NA NENCOUNTER
+ * employee moves to renamed department >> also changes his/her dep name to current
+ * GUIDED
+ */
 
-// Delete department
 function deleteDepartment(id) {
-    // Get existing departments
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     
-    // Find department to delete
     const departmentToDelete = departments.find(dept => dept.id === id);
     
     if (departmentToDelete) {
-        // Check if there are employees in this department
         const employees = JSON.parse(localStorage.getItem('employees')) || [];
         const employeesInDept = employees.filter(emp => emp.department === departmentToDelete.name);
         
@@ -255,35 +213,30 @@ function deleteDepartment(id) {
             return;
         }
         
-        // Filter out the department to delete
         const updatedDepartments = departments.filter(dept => dept.id !== id);
         
-        // Save to localStorage
         localStorage.setItem('departments', JSON.stringify(updatedDepartments));
     }
 }
+/*
+ * remove dep to localstorage >> only if no employee is in that dep
+ */
 
-// View department details
 function viewDepartment(id) {
-    // Get department details modal
     const departmentDetailsModal = document.getElementById('departmentDetailsModal');
     if (!departmentDetailsModal) {
         console.error("Department details modal not found");
         return;
     }
     
-    // Get existing departments
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     
-    // Find department
     const department = departments.find(dept => dept.id === id);
     
     if (department) {
-        // Get employees in this department
         const employees = JSON.parse(localStorage.getItem('employees')) || [];
         const departmentEmployees = employees.filter(emp => emp.department === department.name);
         
-        // Populate department details
         const detailsContainer = document.getElementById('departmentDetails');
         
         if (detailsContainer) {
@@ -329,54 +282,48 @@ function viewDepartment(id) {
             console.error("Department details container not found");
         }
         
-        // Show modal
         departmentDetailsModal.style.display = 'block';
     }
 }
+/* modal / popup to view details of department
+ * vvery guided
+ */
 
-// Open edit department form
 function openEditDepartmentForm(id) {
-    // Get department modal and form
     const departmentModal = document.getElementById('departmentModal');
     const addDepartmentForm = document.getElementById('addDepartmentForm');
     
     if (!departmentModal || !addDepartmentForm) return;
     
-    // Get existing departments
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     
-    // Find department
     const department = departments.find(dept => dept.id === id);
     
     if (department) {
-        // Set form fields
         addDepartmentForm.elements['name'].value = department.name;
         addDepartmentForm.elements['description'].value = department.description;
         
-        // Set form mode to edit
         addDepartmentForm.dataset.mode = 'edit';
         addDepartmentForm.dataset.id = id;
         
-        // Update modal title
         const modalTitle = departmentModal.querySelector('.form-header h2');
         if (modalTitle) {
             modalTitle.textContent = 'Edit Department';
         }
         
-        // Show modal
         departmentModal.style.display = 'block';
     }
 }
+/*
+ * edit mode for department
+ */
 
-// Validate department form data
 function validateDepartmentForm(departmentData) {
-    // Check department name
     if (!departmentData.name || departmentData.name.trim() === '') {
         alert('Please enter a valid department name');
         return false;
     }
     
-    // Check description
     if (!departmentData.description || departmentData.description.trim() === '') {
         alert('Please enter a department description');
         return false;
@@ -384,13 +331,13 @@ function validateDepartmentForm(departmentData) {
     
     return true;
 }
+/*
+ * validation >> e.i. required na mafill up-an
+ */
 
-// Initialize local storage with sample data if empty
 function initializeLocalStorage() {
-    // Check if departments exist
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     if (departments.length === 0) {
-        // Add sample departments
         const sampleDepartments = [
             { id: 1, name: 'HR', description: 'Human Resources Department' },
             { id: 2, name: 'IT', description: 'Information Technology Department' },
@@ -400,3 +347,6 @@ function initializeLocalStorage() {
         localStorage.setItem('departments', JSON.stringify(sampleDepartments));
     }
 }
+/*
+ * default departments >> normal
+ */

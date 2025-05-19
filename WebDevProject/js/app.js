@@ -1,10 +1,27 @@
-// Additional mobile responsiveness improvements
+
+
+
+
+
+ /*
+ * ----- PAYROLL SYSTEM MOBILE RESPONSIVENESS MODULE -----
+ * This module improves the mobile user experience of the payroll system by adding
+ * touch gestures, scroll indicators, viewport adjustments, and oetc.`
+ 
+ * Sets up all mobile responsiveness improvements when the DOM content is loaded.
+ * Initializes touch gesture handling, scrolling indicators, viewport configuration,
+ * and iOS double-tap prevention.
+ */
+
+/*
+NOTE fr JE: app.js is optional ===> it is not required for the payroll system to work
+NOTE: m0st of app.js is made using an AI template for mobile reponsiveness >> touch/ gesture options
+*/
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Add swipe functionality for mobile to open/close sidebar
     let touchStartX = 0;
     let touchEndX = 0;
     
-    // Detect touch on the document
     document.addEventListener('touchstart', function(e) {
         touchStartX = e.changedTouches[0].screenX;
     }, false);
@@ -14,27 +31,23 @@ document.addEventListener('DOMContentLoaded', function() {
         handleSwipe();
     }, false);
     
-    // Handle swipe left/right
     function handleSwipe() {
         const sidebar = document.querySelector('.sidebar');
         const dashboard = document.querySelector('.dashboard');
         
         if (!sidebar || !dashboard) return;
         
-        // Swipe left (close sidebar)
         if (touchEndX < touchStartX - 50 && !sidebar.classList.contains('collapsed')) {
             sidebar.classList.add('collapsed');
             dashboard.classList.add('expanded');
         }
         
-        // Swipe right (open sidebar)
         if (touchEndX > touchStartX + 50 && sidebar.classList.contains('collapsed')) {
             sidebar.classList.remove('collapsed');
             dashboard.classList.remove('expanded');
         }
     }
     
-    // Close modals when clicking outside on mobile
     const modals = document.querySelectorAll('.modal');
     
     if (modals.length > 0) {
@@ -47,12 +60,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Improve table scrolling on mobile - add visual indicator
     const tableContainers = document.querySelectorAll('.table-container');
     
     tableContainers.forEach(container => {
         if (container.scrollWidth > container.clientWidth) {
-            // Create and append scroll indicator
             const indicator = document.createElement('div');
             indicator.className = 'scroll-indicator';
             indicator.innerHTML = '<i class="fas fa-arrows-alt-h"></i> Swipe to view more';
@@ -62,14 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
             indicator.style.fontSize = '0.8rem';
             container.appendChild(indicator);
             
-            // Make indicator disappear after user has scrolled
             container.addEventListener('scroll', function() {
                 indicator.style.display = 'none';
             }, { once: true });
         }
     });
     
-    // Add viewport meta tag if not present to ensure proper scaling
     if (!document.querySelector('meta[name="viewport"]')) {
         const meta = document.createElement('meta');
         meta.name = 'viewport';
@@ -77,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementsByTagName('head')[0].appendChild(meta);
     }
     
-    // Add double-tap prevention for iOS devices
     document.addEventListener('touchend', function(event) {
         const now = Date.now();
         const DOUBLE_TAP_THRESHOLD = 300;
@@ -91,3 +99,5 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.setAttribute('data-last-tap', now);
     });
 });
+
+

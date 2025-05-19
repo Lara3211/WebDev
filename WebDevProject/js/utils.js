@@ -1,18 +1,38 @@
+
+
+
+
 function formatCurrency(amount) {
     return new Intl.NumberFormat('en-PH', {
         style: 'currency',
         currency: 'PHP'
     }).format(amount);
+
+/*
+* p[ang] format currency >> gives value to "amount"
+*/
 }
 
 function formatDate(dateString) {
     if (!dateString) return '';
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
+
+
+/*
+ * Formats a date string into a long-form date format.
+*GUIDED
+*/
+
 }
 
 function generateId() {
     return Date.now() + Math.floor(Math.random() * 1000);
+
+/*
+ * Generates a unique ID >> in progress >> payslips sana
+ */
+
 }
 
 function setupPrintButton() {
@@ -22,6 +42,10 @@ function setupPrintButton() {
             window.print();
         });
     }
+/*
+ * Sets up the print functionality for reports. >> in progress >> na p-print whole page
+ */
+
 }
 
 function dateDiffInDays(date1, date2) {
@@ -29,13 +53,20 @@ function dateDiffInDays(date1, date2) {
     const utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
     const utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+
+/*
+* Determines if a given date falls on a weekend (Saturday or Sunday).
+* Used for working day calculations and leave processing.
+* GUIDED
+*/
+
 }
 
 function isWeekend(date) {
     const day = new Date(date).getDay();
     return day === 0 || day === 6;
 /*
-* Determines if a given date falls on a weekend (Saturday or Sunday).
+* is it a weekend >(Saturday or Sunday) simpleng logic to check lang > for WorkingDays.
 */
 }
 
@@ -67,7 +98,7 @@ function calculateAge(dateOfBirth) {
     return age;
 
 /*
- * Calculates a person's age from their date of birth.
+ * Calculates a person's age from their birthday.
  * FOR CONVENIENCE + ERRORS
  */
 

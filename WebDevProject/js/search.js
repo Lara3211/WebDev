@@ -1,21 +1,24 @@
+// REAL TIME SEARCH FUNCTION - credits to: Web Dev Simplified [How to Create a Search Bar]
+// GUIDED
+
+
 document.addEventListener('DOMContentLoaded', function() {
     initializeSearch();
 });
 
+
+
+
+
 function initializeSearch() {
     const searchInput = document.querySelector('.search-container input');
     if (!searchInput) return;
-    
-    // Set placeholder based on current page
-    const currentPage = getCurrentPage();
-    updateSearchPlaceholder(searchInput, currentPage);
-    
-    // Add event listener for search input
+
+    updateSearchPlaceholder(searchInput, getCurrentPage());
+
     searchInput.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase().trim();
-        
-        // Perform search based on current page
-        switch(currentPage) {
+        switch (getCurrentPage()) {
             case 'employees':
                 searchEmployees(searchTerm);
                 break;
@@ -29,7 +32,6 @@ function initializeSearch() {
                 searchPayroll(searchTerm);
                 break;
             case 'reports':
-                searchReports(searchTerm);
                 break;
             case 'dashboard':
                 searchDashboard(searchTerm);
@@ -39,6 +41,11 @@ function initializeSearch() {
         }
     });
 }
+/* Sets search bar >> based sa current page 
+ * event listeners to uuser input
+*/
+
+
 
 function getCurrentPage() {
     const path = window.location.pathname;
@@ -47,11 +54,17 @@ function getCurrentPage() {
     if (path.includes('attendance.html')) return 'attendance';
     if (path.includes('payroll.html')) return 'payroll';
     if (path.includes('reports.html')) return 'reports';
-    return 'dashboard'; // Default to dashboard
+    return 'dashboard';
 }
+/*
+ * if statemetn to determine anong page we are at
+ * connected to initializeSearch >> to set the placeholder of function updateSearblahbalh
+ */
+
+
 
 function updateSearchPlaceholder(searchInput, pageName) {
-    switch(pageName) {
+    switch (pageName) {
         case 'employees':
             searchInput.placeholder = 'Search employees by name, position, department...';
             break;
@@ -65,28 +78,31 @@ function updateSearchPlaceholder(searchInput, pageName) {
             searchInput.placeholder = 'Search payroll by employee name or date...';
             break;
         case 'reports':
-            searchInput.placeholder = 'Search reports by type or date...';
+            searchInput.placeholder = 'Search reports by type or date... (not implemented)';
             break;
         case 'dashboard':
             searchInput.placeholder = 'Search across all modules...';
             break;
     }
 }
+/*
+ * Sets placeholder based on ano nakuha sa getCurrentPage >> initializeSearch
+ */
 
-// Search functions for each page type
+
 function searchEmployees(searchTerm) {
     const table = document.getElementById('employeesTable');
     if (!table) return;
-    
+
     const rows = table.querySelectorAll('tbody tr');
     if (rows.length === 0) return;
-    
+
     rows.forEach(row => {
-        const name = row.cells[0]?.textContent?.toLowerCase() || '';
-        const email = row.cells[1]?.textContent?.toLowerCase() || '';
-        const position = row.cells[2]?.textContent?.toLowerCase() || '';
-        const department = row.cells[3]?.textContent?.toLowerCase() || '';
-        
+        const name = row.cells[0].textContent.toLowerCase() || '';
+        const email = row.cells[1].textContent.toLowerCase() || '';
+        const position = row.cells[2].textContent.toLowerCase() || '';
+        const department = row.cells[3].textContent.toLowerCase() || '';
+
         if (
             searchTerm === '' || 
             name.includes(searchTerm) || 
@@ -99,22 +115,23 @@ function searchEmployees(searchTerm) {
             row.style.display = 'none';
         }
     });
-    
-    // Show "no results" message if all rows are hidden
+
     showNoResultsMessage(table, rows);
 }
+/*
+ * para sa employee table >> search fuinction
+ */
 
 function searchDepartments(searchTerm) {
     const table = document.getElementById('departmentsTable');
     if (!table) return;
-    
+
     const rows = table.querySelectorAll('tr');
-    // Skip the header row
     for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
-        const name = row.cells[0]?.textContent?.toLowerCase() || '';
-        const description = row.cells[1]?.textContent?.toLowerCase() || '';
-        
+        const name = row.cells[0].textContent.toLowerCase() || '';
+        const description = row.cells[1].textContent.toLowerCase() || '';
+
         if (
             searchTerm === '' || 
             name.includes(searchTerm) || 
@@ -125,23 +142,24 @@ function searchDepartments(searchTerm) {
             row.style.display = 'none';
         }
     }
-    
-    // Show "no results" message if all rows are hidden
+
     showNoResultsMessage(table, Array.from(rows).slice(1));
 }
+/*
+ * para sa department table >> search function
+ */
 
 function searchAttendance(searchTerm) {
     const table = document.getElementById('attendanceTable');
     if (!table) return;
-    
+
     const rows = table.querySelectorAll('tr');
-    // Skip the header row
     for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
-        const employeeName = row.cells[0]?.textContent?.toLowerCase() || '';
-        const date = row.cells[1]?.textContent?.toLowerCase() || '';
-        const status = row.cells[2]?.textContent?.toLowerCase() || '';
-        
+        const employeeName = row.cells[0].textContent.toLowerCase() || '';
+        const date = row.cells[1].textContent.toLowerCase() || '';
+        const status = row.cells[2].textContent.toLowerCase() || '';
+
         if (
             searchTerm === '' || 
             employeeName.includes(searchTerm) || 
@@ -153,24 +171,25 @@ function searchAttendance(searchTerm) {
             row.style.display = 'none';
         }
     }
-    
-    // Show "no results" message if all rows are hidden
+
     showNoResultsMessage(table, Array.from(rows).slice(1));
 }
+/*
+ * para sa attendance table >> search function
+ */
 
 function searchPayroll(searchTerm) {
     const table = document.getElementById('payrollTable');
     if (!table) return;
-    
+
     const rows = table.querySelectorAll('tr');
-    // Skip the header row
     for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
-        const employeeName = row.cells[0]?.textContent?.toLowerCase() || '';
-        const payPeriod = row.cells[1]?.textContent?.toLowerCase() || '';
-        const payDate = row.cells[2]?.textContent?.toLowerCase() || '';
-        const amount = row.cells[3]?.textContent?.toLowerCase() || '';
-        
+        const employeeName = row.cells[0].textContent.toLowerCase() || '';
+        const payPeriod = row.cells[1].textContent.toLowerCase() || '';
+        const payDate = row.cells[2].textContent.toLowerCase() || '';
+        const amount = row.cells[3].textContent.toLowerCase() || '';
+
         if (
             searchTerm === '' || 
             employeeName.includes(searchTerm) || 
@@ -183,72 +202,34 @@ function searchPayroll(searchTerm) {
             row.style.display = 'none';
         }
     }
-    
-    // Show "no results" message if all rows are hidden
+
     showNoResultsMessage(table, Array.from(rows).slice(1));
 }
-
-function searchReports(searchTerm) {
-    // For reports, we'll search the report titles and dates if available
-    const reportContainers = document.querySelectorAll('.report-section');
-    if (reportContainers.length === 0) return;
-    
-    reportContainers.forEach(container => {
-        const title = container.querySelector('h3')?.textContent?.toLowerCase() || '';
-        const dateElements = container.querySelectorAll('.date-filter input');
-        let datesText = '';
-        dateElements.forEach(dateEl => {
-            datesText += dateEl.value?.toLowerCase() || '';
-        });
-        
-        if (
-            searchTerm === '' || 
-            title.includes(searchTerm) || 
-            datesText.includes(searchTerm)
-        ) {
-            container.style.display = '';
-        } else {
-            container.style.display = 'none';
-        }
-    });
-    
-    // Check if all sections are hidden
-    const allHidden = Array.from(reportContainers).every(container => 
-        container.style.display === 'none'
-    );
-    
-    const noResultsMsg = document.getElementById('noReportResults');
-    if (allHidden) {
-        if (!noResultsMsg) {
-            const msg = document.createElement('div');
-            msg.id = 'noReportResults';
-            msg.className = 'no-results';
-            msg.textContent = 'No reports match your search criteria.';
-            document.querySelector('.content-area').appendChild(msg);
-        }
-    } else if (noResultsMsg) {
-        noResultsMsg.remove();
-    }
-}
+/*
+ * para sa payroll table >> search function
+ */
 
 function searchDashboard(searchTerm) {
-    // For dashboard, we'll search recent employees and upcoming paydays
     searchDashboardEmployees(searchTerm);
     searchDashboardPaydays(searchTerm);
 }
+/*
+ * overall search >> dashboard >> continer for two fucntons
+ */
+
+
 
 function searchDashboardEmployees(searchTerm) {
     const table = document.getElementById('recentEmployeesTable');
     if (!table) return;
-    
+
     const rows = table.querySelectorAll('tr');
-    // Skip the header row
     for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
-        const name = row.cells[0]?.textContent?.toLowerCase() || '';
-        const position = row.cells[1]?.textContent?.toLowerCase() || '';
-        const department = row.cells[2]?.textContent?.toLowerCase() || '';
-        
+        const name = row.cells[0].textContent.toLowerCase() || '';
+        const position = row.cells[1].textContent.toLowerCase() || '';
+        const department = row.cells[2].textContent.toLowerCase() || '';
+
         if (
             searchTerm === '' || 
             name.includes(searchTerm) || 
@@ -260,23 +241,25 @@ function searchDashboardEmployees(searchTerm) {
             row.style.display = 'none';
         }
     }
-    
-    // Show "no results" message if all rows are hidden
+
     showNoResultsMessage(table, Array.from(rows).slice(1));
 }
+/*
+ * ALmost same as employee >> name/pos/dep
+ */
+
 
 function searchDashboardPaydays(searchTerm) {
     const table = document.getElementById('upcomingPaydaysTable');
     if (!table) return;
-    
+
     const rows = table.querySelectorAll('tr');
-    // Skip the header row
     for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
-        const employee = row.cells[0]?.textContent?.toLowerCase() || '';
-        const payDate = row.cells[1]?.textContent?.toLowerCase() || '';
-        const amount = row.cells[2]?.textContent?.toLowerCase() || '';
-        
+        const employee = row.cells[0].textContent.toLowerCase() || '';
+        const payDate = row.cells[1].textContent.toLowerCase() || '';
+        const amount = row.cells[2].textContent.toLowerCase() || '';
+
         if (
             searchTerm === '' || 
             employee.includes(searchTerm) || 
@@ -288,26 +271,24 @@ function searchDashboardPaydays(searchTerm) {
             row.style.display = 'none';
         }
     }
-    
-    // Show "no results" message if all rows are hidden
+
     showNoResultsMessage(table, Array.from(rows).slice(1));
 }
+/*
+ * same as sDE function >> name/paydate/amount
+ */
 
 function showNoResultsMessage(table, rows) {
-    // Check if all rows are hidden
     const allHidden = Array.from(rows).every(row => 
         row.style.display === 'none'
     );
-    
-    // Get the parent container of the table
+
     const tableContainer = table.closest('.table-container');
     if (!tableContainer) return;
-    
-    // Check if we already have a no results message
+
     let noResultsMsg = tableContainer.querySelector('.no-results');
-    
+
     if (allHidden) {
-        // Show no results message if it doesn't exist yet
         if (!noResultsMsg) {
             noResultsMsg = document.createElement('div');
             noResultsMsg.className = 'no-results';
@@ -317,14 +298,14 @@ function showNoResultsMessage(table, rows) {
             noResultsMsg.style.color = '#666';
             tableContainer.appendChild(noResultsMsg);
         }
-        // Hide the table but keep the header
         table.style.display = 'none';
     } else {
-        // Remove no results message if it exists
         if (noResultsMsg) {
             noResultsMsg.remove();
         }
-        // Make sure table is visible
         table.style.display = '';
     }
 }
+/* 
+ * if none is found >> then set we "No items match your search criteria.""
+ */

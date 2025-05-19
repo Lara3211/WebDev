@@ -1,36 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize local storage if needed
     initializeLocalStorage();
-    
-    // Load employees data
     loadEmployees();
-    
-    // Set up event listeners
     setupEmployeeEvents();
-    
-    // Populate department dropdown
     populateFormDropdowns();
 });
 
-// Load employees from localStorage
 function loadEmployees() {
     const employeesTable = document.querySelector('#employeesTable tbody');
     if (!employeesTable) return;
-    
-    // Get employees data
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    
-    // Clear existing table rows
     employeesTable.innerHTML = '';
-    
     if (employees.length === 0) {
         const emptyRow = document.createElement('tr');
         emptyRow.innerHTML = '<td colspan="6" class="text-center">No employees found. Add your first employee using the button above.</td>';
         employeesTable.appendChild(emptyRow);
         return;
     }
-    
-    // Add table rows for each employee
     employees.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -48,61 +33,46 @@ function loadEmployees() {
         employeesTable.appendChild(row);
     });
 }
+/*
+ *Employee data from localStorage and puts them to table
+ */
 
-// Set up event listeners for employee actions
 function setupEmployeeEvents() {
-    // Get form and buttons
     const addEmployeeForm = document.getElementById('addEmployeeForm');
     const addEmployeeBtn = document.getElementById('addEmployeeBtn');
     const employeeModal = document.getElementById('employeeModal');
     const employeeDetailsModal = document.getElementById('employeeDetailsModal');
     const closeModalBtns = document.querySelectorAll('.close-btn');
-    
-    // Add employee button event
     if (addEmployeeBtn) {
         addEmployeeBtn.addEventListener('click', function() {
-            // Reset form
             if (addEmployeeForm) {
                 addEmployeeForm.reset();
                 addEmployeeForm.dataset.mode = 'add';
                 addEmployeeForm.dataset.id = '';
-                
-                // Update modal title
                 const modalTitle = employeeModal.querySelector('.form-header h2');
                 if (modalTitle) {
                     modalTitle.textContent = 'Add New Employee';
                 }
-                
-                // Show modal
                 employeeModal.style.display = 'block';
             }
         });
     }
-    
-    // Close modal buttons event
     closeModalBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Find the parent modal of this close button
             const modal = this.closest('.modal');
             if (modal) {
                 modal.style.display = 'none';
             }
         });
     });
-    
-    // Click outside modal to close
     window.addEventListener('click', function(event) {
         if (event.target.classList.contains('modal')) {
             event.target.style.display = 'none';
         }
     });
-    
-    // Form submit event
     if (addEmployeeForm) {
         addEmployeeForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // Get form data
             const formData = new FormData(this);
             const employeeData = {
                 name: formData.get('name'),
@@ -112,47 +82,29 @@ function setupEmployeeEvents() {
                 salary: parseFloat(formData.get('salary')),
                 dateHired: formData.get('dateHired')
             };
-            
-            // Validate form data
             if (!validateEmployeeForm(employeeData)) {
                 return;
             }
-            
-            // Get mode (add or edit)
             const mode = this.dataset.mode;
-            
             if (mode === 'add') {
-                // Add new employee
                 addEmployee(employeeData);
             } else if (mode === 'edit') {
-                // Edit existing employee
                 const id = parseInt(this.dataset.id);
                 editEmployee(id, employeeData);
             }
-            
-            // Hide modal
             employeeModal.style.display = 'none';
-            
-            // Reload employees
             loadEmployees();
         });
     }
-    
-    // Delegate click events for action buttons
     document.addEventListener('click', function(e) {
-        // View button
         if (e.target.classList.contains('view-btn')) {
             const id = parseInt(e.target.dataset.id);
             viewEmployee(id);
         }
-        
-        // Edit button
         if (e.target.classList.contains('edit-btn')) {
             const id = parseInt(e.target.dataset.id);
             openEditEmployeeForm(id);
         }
-        
-        // Delete button
         if (e.target.classList.contains('delete-btn')) {
             if (confirm('Are you sure you want to delete this employee?')) {
                 const id = parseInt(e.target.dataset.id);
@@ -162,71 +114,57 @@ function setupEmployeeEvents() {
         }
     });
 }
-
-// Add new employee
+/*
+ * Sets up all event listeners for employee management actions.
+ * GUIDED
+ */
 function addEmployee(employeeData) {
-    // Get existing employees
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    
-    // Generate new ID
     const id = generateId();
-    
-    // Add new employee with ID
     employees.push({
         id: id,
         ...employeeData
     });
-    
-    // Save to localStorage
     localStorage.setItem('employees', JSON.stringify(employees));
 }
+/*
+ * Creates a new employee record and saves it to localStorage.
+ * ...employeeData meant like cloning, copying it.
+ */
 
-// Edit employee
 function editEmployee(id, employeeData) {
-    // Get existing employees
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    
-    // Find employee index
     const index = employees.findIndex(emp => emp.id === id);
-    
     if (index !== -1) {
-        // Update employee data, preserving the ID
         employees[index] = { ...employeeData, id: id };
-        
-        // Save to localStorage
         localStorage.setItem('employees', JSON.stringify(employees));
     }
 }
+/*
+ * Updates record of employees, www
+ */
 
-// Delete employee
 function deleteEmployee(id) {
-    // Get existing employees
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    
-    // Filter out the employee to delete
     const updatedEmployees = employees.filter(emp => emp.id !== id);
-    
-    // Save to localStorage
     localStorage.setItem('employees', JSON.stringify(updatedEmployees));
 }
+/*
+ * deletes record of employees, www
+ */
 
-// View employee details
 function viewEmployee(id) {
-    // Get employee details modal
     const employeeDetailsModal = document.getElementById('employeeDetailsModal');
     if (!employeeDetailsModal) {
         console.error("Employee details modal not found");
         return;
     }
     
-    // Get existing employees
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     
-    // Find employee
     const employee = employees.find(emp => emp.id === id);
     
     if (employee) {
-        // Populate employee details
         const detailsContainer = document.getElementById('employeeDetails');
         
         if (detailsContainer) {
@@ -245,27 +183,24 @@ function viewEmployee(id) {
             console.error("Employee details container not found");
         }
         
-        // Show modal
         employeeDetailsModal.style.display = 'block';
     }
 }
+/*
+ * view records of employees, www
+ */
 
-// Open edit employee form
 function openEditEmployeeForm(id) {
-    // Get employee modal and form
     const employeeModal = document.getElementById('employeeModal');
     const addEmployeeForm = document.getElementById('addEmployeeForm');
     
     if (!employeeModal || !addEmployeeForm) return;
     
-    // Get existing employees
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     
-    // Find employee
     const employee = employees.find(emp => emp.id === id);
     
     if (employee) {
-        // Update form fields
         addEmployeeForm.elements['name'].value = employee.name;
         addEmployeeForm.elements['email'].value = employee.email;
         addEmployeeForm.elements['position'].value = employee.position;
@@ -273,54 +208,46 @@ function openEditEmployeeForm(id) {
         addEmployeeForm.elements['salary'].value = employee.salary;
         addEmployeeForm.elements['dateHired'].value = employee.dateHired;
         
-        // Set form mode to edit
         addEmployeeForm.dataset.mode = 'edit';
         addEmployeeForm.dataset.id = id;
         
-        // Update modal title
         const modalTitle = employeeModal.querySelector('.form-header h2');
         if (modalTitle) {
             modalTitle.textContent = 'Edit Employee';
         }
         
-        // Show modal
         employeeModal.style.display = 'block';
     }
 }
-
-// Validate employee form data
+/*
+ *Employee form modal comes back with data >> editable
+ */
 function validateEmployeeForm(employeeData) {
-    // Check name
     if (!employeeData.name || employeeData.name.trim() === '') {
         alert('Please enter a valid name');
         return false;
     }
     
-    // Check email
     if (!employeeData.email || !isValidEmail(employeeData.email)) {
         alert('Please enter a valid email address');
         return false;
     }
     
-    // Check position
     if (!employeeData.position || employeeData.position.trim() === '') {
         alert('Please enter a valid position');
         return false;
     }
     
-    // Check department
     if (!employeeData.department || employeeData.department.trim() === '') {
         alert('Please select a department');
         return false;
     }
     
-    // Check salary
     if (!employeeData.salary || isNaN(employeeData.salary) || employeeData.salary <= 0) {
         alert('Please enter a valid salary amount');
         return false;
     }
     
-    // Check date hired
     if (!employeeData.dateHired || employeeData.dateHired.trim() === '') {
         alert('Please enter a valid date hired');
         return false;
@@ -328,21 +255,20 @@ function validateEmployeeForm(employeeData) {
     
     return true;
 }
+/*
+ * Validation before sendd
+ */
 
-// Populate department dropdown in the form
 function populateFormDropdowns() {
     const departmentSelect = document.getElementById('department');
     if (!departmentSelect) return;
     
-    // Get departments from localStorage
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     
-    // Clear existing options except the first placeholder option
     while (departmentSelect.options.length > 1) {
         departmentSelect.options.remove(1);
     }
     
-    // Add department options
     departments.forEach(dept => {
         const option = document.createElement('option');
         option.value = dept.name;
@@ -350,13 +276,13 @@ function populateFormDropdowns() {
         departmentSelect.appendChild(option);
     });
 }
+/*
+ * Retrieves department data from localStorage.
+ */
 
-// Initialize local storage with sample data if empty
 function initializeLocalStorage() {
-    // Check if departments exist
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
     if (departments.length === 0) {
-        // Add sample departments
         const sampleDepartments = [
             { id: 1, name: 'HR', description: 'Human Resources Department' },
             { id: 2, name: 'IT', description: 'Information Technology Department' },
@@ -366,15 +292,13 @@ function initializeLocalStorage() {
         localStorage.setItem('departments', JSON.stringify(sampleDepartments));
     }
     
-    // Check if employees exist
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     if (employees.length === 0) {
-        // Add sample employees
         const sampleEmployees = [
             {
                 id: 1,
-                name: 'John Doe',
-                email: 'john.doe@bpc.edu.ph',
+                name: 'John Ericson',
+                email: 'john.ericson@bpc.edu.ph',
                 position: 'Head Teacher',
                 department: 'IT',
                 salary: 35000,
@@ -382,8 +306,8 @@ function initializeLocalStorage() {
             },
             {
                 id: 2,
-                name: 'Maria Santos',
-                email: 'maria.santos@bpc.edu.ph',
+                name: 'Kian Ashley ',
+                email: 'kian.ash@bpc.edu.ph',
                 position: 'HR Officer',
                 department: 'HR',
                 salary: 28000,
@@ -393,3 +317,6 @@ function initializeLocalStorage() {
         localStorage.setItem('employees', JSON.stringify(sampleEmployees));
     }
 }
+/*
+ * Initializes localStorage and sets data of logged in usser >> admin
+ */

@@ -1,28 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Load payroll data
     loadPayroll();
-    
-    // Set up event listeners
     setupPayrollEvents();
 });
 
-// Load payroll from localStorage
 function loadPayroll() {
     const payrollTable = document.getElementById('payrollTable');
     if (!payrollTable) return;
     
-    // Get payroll data
     const payroll = JSON.parse(localStorage.getItem('payroll')) || [];
     
-    // Sort by pay date (descending)
-    const sortedPayroll = [...payroll].sort((a, b) => {
-        return new Date(b.payDate) - new Date(a.payDate);
-    });
+    const sortedPayroll = [...payroll].sort((a, b) => new Date(b.payDate) - new Date(a.payDate));
     
-    // Clear existing table rows
     payrollTable.innerHTML = '';
     
-    // Add table header
     const headerRow = document.createElement('tr');
     headerRow.innerHTML = `
         <th>Employee</th>
@@ -35,12 +25,9 @@ function loadPayroll() {
     `;
     payrollTable.appendChild(headerRow);
     
-    // Get employees data
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     
-    // Add table rows for each payroll record
     sortedPayroll.forEach(record => {
-        // Find employee
         const employee = employees.find(emp => emp.id === record.employeeId);
         
         if (employee) {
@@ -62,24 +49,23 @@ function loadPayroll() {
         }
     });
 }
+/**
+ * Loads payroll records from localStorage
+ */
 
-// Set up event listeners for payroll actions
 function setupPayrollEvents() {
-    // Get form and buttons
     const generatePayrollBtn = document.getElementById('generatePayrollBtn');
     const payrollForm = document.getElementById('payrollForm');
     const payrollModal = document.getElementById('payrollModal');
     const payrollDetailsModal = document.getElementById('payrollDetailsModal');
     const closeModalBtns = document.querySelectorAll('.close-btn');
     
-    // Generate payroll button event
     if (generatePayrollBtn) {
         generatePayrollBtn.addEventListener('click', function() {
             openGeneratePayrollForm();
         });
     }
     
-    // Close modal buttons event
     closeModalBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             payrollModal.style.display = 'none';
@@ -89,7 +75,6 @@ function setupPayrollEvents() {
         });
     });
     
-    // Click outside modal to close
     window.addEventListener('click', function(event) {
         if (event.target === payrollModal) {
             payrollModal.style.display = 'none';
@@ -99,12 +84,10 @@ function setupPayrollEvents() {
         }
     });
     
-    // Form submit event
     if (payrollForm) {
         payrollForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Get form data
             const formData = new FormData(this);
             const payrollData = {
                 employeeId: parseInt(formData.get('employeeId')),
@@ -119,7 +102,6 @@ function setupPayrollEvents() {
                 }
             };
             
-            // Calculate total deductions and net salary
             payrollData.totalDeductions = 
                 payrollData.deductions.tax + 
                 payrollData.deductions.sss + 
@@ -128,46 +110,36 @@ function setupPayrollEvents() {
             
             payrollData.netSalary = payrollData.baseSalary - payrollData.totalDeductions;
             
-            // Validate form data
             if (!validatePayrollForm(payrollData)) {
                 return;
             }
             
-            // Get mode (add or edit)
             const mode = this.dataset.mode;
             
             if (mode === 'add') {
-                // Add new payroll record
                 addPayroll(payrollData);
             } else if (mode === 'edit') {
-                // Edit existing payroll record
                 const id = parseInt(this.dataset.id);
                 editPayroll(id, payrollData);
             }
             
-            // Hide modal
             payrollModal.style.display = 'none';
             
-            // Reload payroll
             loadPayroll();
         });
     }
     
-    // Delegate click events for action buttons
     document.addEventListener('click', function(e) {
-        // View button
         if (e.target.classList.contains('view-btn') && e.target.closest('#payrollTable')) {
             const id = parseInt(e.target.dataset.id);
             viewPayslip(id);
         }
         
-        // Edit button
         if (e.target.classList.contains('edit-btn') && e.target.closest('#payrollTable')) {
             const id = parseInt(e.target.dataset.id);
             openEditPayrollForm(id);
         }
         
-        // Delete button
         if (e.target.classList.contains('delete-btn') && e.target.closest('#payrollTable')) {
             const id = parseInt(e.target.dataset.id);
             if (confirm('Are you sure you want to delete this payroll record?')) {
@@ -177,7 +149,6 @@ function setupPayrollEvents() {
         }
     });
 
-    // Add event listener for employee select change
     const employeeSelect = document.getElementById('employeeId');
     if (employeeSelect) {
         employeeSelect.addEventListener('change', function() {
@@ -185,66 +156,59 @@ function setupPayrollEvents() {
         });
     }
 }
+/*
+ *event clickers >> set data
+ */
 
-// Add new payroll record
 function addPayroll(payrollData) {
-    // Get existing payroll records
     const payroll = JSON.parse(localStorage.getItem('payroll')) || [];
     
-    // Add ID to new payroll record
     payrollData.id = generateId();
     
-    // Add to array
     payroll.push(payrollData);
     
-    // Save to localStorage
     localStorage.setItem('payroll', JSON.stringify(payroll));
 }
+/*
+ * adds payroll >> save to local storage.
+*/
 
-// Edit payroll record
 function editPayroll(id, payrollData) {
-    // Get existing payroll records
     const payroll = JSON.parse(localStorage.getItem('payroll')) || [];
     
-    // Find payroll index
     const index = payroll.findIndex(p => p.id === id);
     
     if (index !== -1) {
-        // Update payroll data, preserving the ID
         payroll[index] = { ...payrollData, id: id };
         
-        // Save to localStorage
         localStorage.setItem('payroll', JSON.stringify(payroll));
     }
 }
+/*
+ * edit payroll
+ */
 
-// Delete payroll record
 function deletePayroll(id) {
-    // Get existing payroll records
     const payroll = JSON.parse(localStorage.getItem('payroll')) || [];
     
-    // Filter out the payroll to delete
     const updatedPayroll = payroll.filter(p => p.id !== id);
     
-    // Save to localStorage
     localStorage.setItem('payroll', JSON.stringify(updatedPayroll));
 }
+/*
+ * Removes a payroll record.
+ */
 
-// Open generate payroll form
 function openGeneratePayrollForm() {
-    // Get payroll modal and form
     const payrollModal = document.getElementById('payrollModal');
     const payrollForm = document.getElementById('payrollForm');
     
     if (!payrollModal || !payrollForm) return;
     
-    // Reset form
     payrollForm.reset();
     
-    // Populate employee dropdown
     populateEmployeeDropdown();
     
-    // Set default pay period and date
     const now = new Date();
     const currentMonth = now.toLocaleString('default', { month: 'long' });
     const currentYear = now.getFullYear();
@@ -255,41 +219,37 @@ function openGeneratePayrollForm() {
     payrollForm.elements['payPeriod'].value = payPeriod;
     payrollForm.elements['payDate'].value = payDate;
     
-    // Set form mode to add
     payrollForm.dataset.mode = 'add';
     payrollForm.dataset.id = '';
     
-    // Update modal title
     const modalTitle = payrollModal.querySelector('.form-header h2');
     if (modalTitle) {
         modalTitle.textContent = 'Generate Payroll';
     }
     
-    // Set default tax rate and contributions
     payrollForm.elements['tax'].value = '';
     payrollForm.elements['sss'].value = '1200';
     payrollForm.elements['philhealth'].value = '400';
     payrollForm.elements['pagibig'].value = '200';
     
-    // Set base salary based on selected employee
     updateBaseSalary();
     
-    // Show modal
     payrollModal.style.display = 'block';
 }
+/*
+ * Opens and prepares the payroll generation form.
+ * GUIDED
+ */
 
-// Open edit payroll form
 function openEditPayrollForm(id) {
-    // Get payroll modal and form
+
     const payrollModal = document.getElementById('payrollModal');
     const payrollForm = document.getElementById('payrollForm');
     
     if (!payrollModal || !payrollForm) return;
     
-    // Get existing payroll records
     const payroll = JSON.parse(localStorage.getItem('payroll')) || [];
     
-    // Find payroll record
     const record = payroll.find(p => p.id === id);
     
     if (record) {
@@ -320,9 +280,9 @@ function openEditPayrollForm(id) {
         payrollModal.style.display = 'block';
     }
 }
-
-
-
+/*
+ *payroll form with edit mode.
+ */
 
 
 
@@ -335,23 +295,13 @@ function viewPayslip() {
 
 
 
-
-
-
-
-
-// Populate employee dropdown in payroll form
 function populateEmployeeDropdown() {
     const employeeSelect = document.getElementById('employeeId');
     if (!employeeSelect) return;
-    
-    // Get employees
+
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    
-    // Clear existing options
     employeeSelect.innerHTML = '<option value="">Select Employee</option>';
-    
-    // Add options for each employee
+
     employees.forEach(employee => {
         const option = document.createElement('option');
         option.value = employee.id;
@@ -359,53 +309,54 @@ function populateEmployeeDropdown() {
         employeeSelect.appendChild(option);
     });
 }
+/*
+ * adds employees to dropwon
+ * 
+ */
 
-// Update base salary based on selected employee
 function updateBaseSalary() {
     const employeeSelect = document.getElementById('employeeId');
     const baseSalaryInput = document.getElementById('baseSalary');
     const taxInput = document.getElementById('tax');
-    
+
     if (!employeeSelect || !baseSalaryInput || !taxInput) return;
-    
+
     const selectedEmployeeId = parseInt(employeeSelect.value);
     if (!selectedEmployeeId) {
         baseSalaryInput.value = '';
         taxInput.value = '';
         return;
     }
-    
-    // Get employees
+
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    
-    // Find selected employee
     const employee = employees.find(emp => emp.id === selectedEmployeeId);
-    
+
     if (employee) {
-        // Set base salary
         baseSalaryInput.value = employee.salary;
-        
-        // Calculate tax (12% of salary)
         const tax = employee.salary * 0.12;
         taxInput.value = tax.toFixed(2);
     }
 }
+/*
+ *base salary * 12% tax
+ */
 
-// Validate payroll form
 function validatePayrollForm(payrollData) {
-    // Check required fields
     if (!payrollData.employeeId || !payrollData.payPeriod || !payrollData.payDate || 
         !payrollData.baseSalary || !payrollData.deductions.tax || !payrollData.deductions.sss || 
         !payrollData.deductions.philhealth || !payrollData.deductions.pagibig) {
         alert('Please fill in all required fields.');
         return false;
     }
-    
-    // Validate numeric values
+
     if (isNaN(payrollData.baseSalary) || payrollData.baseSalary <= 0) {
         alert('Please enter a valid base salary amount.');
         return false;
     }
-    
+
     return true;
 }
+/*
+ * Validation >> e.i. required na mafill up-an
+ */
+

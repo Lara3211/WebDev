@@ -10,8 +10,9 @@
 
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
+    
+    <div class="container"> <!-- MAIN CONTAINER ------------------------------------------------------>  
+<!-- SIDEBAR --------------------------------------------------------------------->  
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-container">
@@ -68,10 +69,10 @@
                 </li>
             </ul>
         </div>
-        
-        <!-- Main Content -->
+<!-- SIDEBAR --------------------------------------------------------------------->  
+ 
+<!-- DASHBOARD --------------------------------------------------------------------->  
         <div class="dashboard">
-            <!-- Header -->
             <div class="main-header">
                 <h1>Department Management</h1>
                 <div class="search-container">
@@ -82,9 +83,8 @@
                 </div>
             </div>
             
-            <!-- Departments Content -->
+
             <div class="content-area">
-                <!-- Action Buttons -->
                 <div class="action-buttons dp-action-container">
                     <button id="addDepartmentBtn" class="btn btn-primary">
                         <i class="fas fa-plus dp-icon-margin"></i>
@@ -92,7 +92,6 @@
                     </button>
                 </div>
                 
-                <!-- Departments Table -->
                 <div class="table-container">
                     <div class="table-header">
                         <h2>All Departments</h2>
@@ -104,11 +103,9 @@
                             <th>Number of Employees</th>
                             <th>Actions</th>
                         </tr>
-                        <!-- Table rows will be populated by JavaScript -->
                     </table>
                 </div>
-                
-                <!-- College Campus Image -->
+ 
                 <div class="dp-images-container">
                     <div class="dp-image-box">
                         <img src="./images/department1.jpg" 
@@ -131,8 +128,11 @@
             </div>
         </div>
     </div>
-    
-    <!-- Add Department Modal -->
+<!-- DASHBOARD ---------------------------------------------------------------------> 
+ 
+
+
+<!-- DEpartment MODAL --------------------------------------------------------------------->  
     <div id="departmentModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -155,8 +155,6 @@
         </div>
     </div>
 
-    
-    <!-- View Department Modal -->
     <div id="departmentDetailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -164,7 +162,6 @@
                 <h2>Department Details</h2>
             </div>
             <div id="departmentDetails">
-                <!-- Department details will be populated by JavaScript -->
             </div>
         </div>
     </div>

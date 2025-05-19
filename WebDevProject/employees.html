@@ -10,8 +10,9 @@
 
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
+    <div class="container"> <!-- MAIN CONTAINER ---------------------------------------->
+        
+<!-- SIDEBAR ----------------------------------------------------------------------->      
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-container">
@@ -68,10 +69,11 @@
                 </li>
             </ul>
         </div>
-        
-        <!-- Main Content -->
+<!-- SIDEBAR ----------------------------------------------------------------------->
+
+<!-- DASHBOARD --------------------------------------------------------------------->
         <div class="dashboard">
-            <!-- Header -->
+
             <div class="main-header">
                 <h1>Employees Management</h1>
                 <div class="search-container">
@@ -82,9 +84,8 @@
                 </div>
             </div>
             
-            <!-- Employees Content -->
+
             <div class="content-area">
-                <!-- Action Buttons -->
                 <div class="action-buttons ey-action-container">
                     <button id="addEmployeeBtn" class="btn btn-primary">
                         <i class="fas fa-plus ey-icon-margin"></i>
@@ -92,7 +93,6 @@
                     </button>
                 </div>
                 
-                <!-- Employees Table -->
                 <div class="table-container">
                     <div class="table-header">
                         <h2>All Employees</h2>
@@ -106,11 +106,8 @@
                             <th>Date Hired</th>
                             <th>Actions</th>
                         </tr>
-                        <!-- Table rows will be populated by JavaScript -->
                     </table>
                 </div>
-
-                <!-- Employees Bottom Image -->
                 <div class="ey-images-container">
                     <div class="ey-image-box">
                         <img src="./images/employees1.jpg" 
@@ -133,9 +130,11 @@
             </div>
         </div>
     </div>
+<!-- DASHBOARD --------------------------------------------------------------------->    
     
-    <!-- Add Employee Modal -->
-    <div id="employeeModal" class="modal">
+
+<!-- Employee Modal --------------------------------------------------------------------->  
+<div id="employeeModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <div class="form-header">
@@ -175,7 +174,6 @@
         </div>
     </div>
     
-    <!-- View Employee Modal -->
     <div id="employeeDetailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
@@ -183,7 +181,6 @@
                 <h2>Employee Details</h2>
             </div>
             <div id="employeeDetails">
-                <!-- Employee details will be populated by JavaScript -->
             </div>
         </div>
     </div>

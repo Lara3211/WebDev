@@ -185,3 +185,35 @@ Change Password
 System Settings (e.g., company name, logo, pay cycle configs)
 
 --------CHATGPT SUGGESTIONS (STRUCTURE OF THE WEBSITE)---------------------------
+
+
+
+
+SOURCES -----------------------------------------------------------
+
+[   OVERALL Helper
+    How to create Dashboard with HTML and CSS | Create Attendance Dashboard with HTML and CSS
+    https://www.youtube.com/watch?v=IqAPhLLd_bM
+
+[  LOCALSTORAGE SHENANIGANS
+
+    Local Storage Explained In 10 min | Javascript
+    https://www.youtube.com/watch?v=fYTTUBa-lPc
+
+    Save Data With JavaScript Using LocalStorage - Basics
+    https://www.youtube.com/watch?v=qbxg9MjXBDs
+
+[   PIECHART
+
+    CSS Pie Charts Made Simple - Step-by-Step Guide
+    https://www.youtube.com/watch?v=pCyW8M8mWek
+
+[   SEARCH Bar - da bes
+
+    How To Create A Search Bar In JavaScript
+    https://www.youtube.com/watch?v=TlP5WIxVirU&t=600s
+
+[   REPORT
+
+    Print part of a web page only with CSS and JavaScript
+    https://www.youtube.com/watch?v=_06QhvUsx_s

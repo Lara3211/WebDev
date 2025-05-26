@@ -1,0 +1,235 @@
+@import './variables.css';
+
+/* Loan Management Specific Styles */
+.ln-action-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ln-icon-margin {
+    margin-right: 5px;
+}
+
+.ln-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ln-stat-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.ln-stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.ln-stat-icon {
+    background-color: rgba(0, 100, 0, 0.1);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.ln-stat-info {
+    flex: 1;
+}
+
+.ln-stat-info h3 {
+    color: var(--dark-color);
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.ln-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ln-filter-container select {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+/* Loan status badges */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+    min-width: 80px;
+}
+
+.status-pending {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-approved {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-active {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+
+.status-completed {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Loan Details Modal */
+.ln-details-modal {
+    max-width: 800px;
+    width: 90%;
+}
+
+.ln-details-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.ln-detail-item {
+    margin-bottom: 1rem;
+}
+
+.ln-detail-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+
+.ln-detail-value {
+    font-size: 1.1rem;
+}
+
+.ln-payment-history {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.ln-action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.ln-action-btn {
+    min-width: 120px;
+}
+
+/* Amortization Schedule */
+.ln-amortization-schedule {
+    margin-top: 1.5rem;
+    overflow-x: auto;
+}
+
+.ln-schedule-toggle {
+    margin-bottom: 1rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    display: inline-block;
+}
+
+.ln-schedule-toggle i {
+    margin-right: 5px;
+}
+
+/* Banner image */
+.ln-banner-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.ln-banner-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    max-height: 300px;
+    object-fit: cover;
+    transition: all 0.3s ease-in-out;
+}
+
+.ln-banner-img:hover {
+    transform: scale(1.05);
+}
+
+.ln-banner-text {
+    margin-top: 10px;
+    font-style: italic;
+    color: #ffffff;
+}
+
+/* Payment card */
+.ln-payment-card {
+    background-color: #f8f9fa;
+    border-left: 4px solid var(--primary-color);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.ln-payment-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.ln-payment-amount {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.ln-payment-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ln-action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .ln-action-btn {
+        width: 100%;
+    }
+    
+    .ln-details-section {
+        grid-template-columns: 1fr;
+    }
+}

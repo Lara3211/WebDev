@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPC Payroll System - Loan Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/loans.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="/images/bpclogo.png" alt="BPC Logo" class="logo">
+                    <h2>BPC Payroll</h2>
+                </div>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+            
+            <ul class="menu">
+                <li>
+                    <a href="index.html" class="menu-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="employees.html" class="menu-item">
+                        <i class="fas fa-users"></i>
+                        <span class="menu-text">Employees Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="departments.html" class="menu-item">
+                        <i class="fas fa-building"></i>
+                        <span class="menu-text">Department Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="attendance.html" class="menu-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="menu-text">Attendance Tracking</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="payroll.html" class="menu-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span class="menu-text">Payroll Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="loans.html" class="menu-item">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <span class="menu-text">Loan Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="payroll.html" class="menu-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="menu-text">Payroll Reports</span>
+                    </a>
+                </li>
+                <li class="menu-bottom">
+                    <a href="login.html" class="menu-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="menu-text">Log Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="dashboard">
+            <div class="main-header">
+                <h1>Loan Management</h1>
+                <div class="search-container">
+                    <input type="text" placeholder="Search loans by employee name, status...">
+                </div>
+                <div class="user-info">
+                    Admin
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <div class="ln-action-container">
+                    <button id="createLoanBtn" class="btn btn-primary">
+                        <i class="fas fa-plus ln-icon-margin"></i>Create New Loan
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Loan Records</h2>
+                        <div class="ln-filter-container">
+                            <select id="statusFilter" class="form-control">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table id="loansTable">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Loan Type</th>
+                                <th>Amount</th>
+                                <th>Term (months)</th>
+                                <th>Application Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="ln-banner-container">
+                    <img src="/images/payroll-bg.jpg" alt="Campus Image" class="ln-banner-img">
+                    <p class="ln-banner-text">Bulacan Polytechnic College - Empowering employees through financial assistance programs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="loanModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="form-header">
+                <h2>Apply for Loan</h2>
+            </div>
+            <form id="loanForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="employeeId">Employee</label>
+                        <select id="employeeId" name="employeeId" class="form-control" required>
+                            <option value="">Select Employee</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="loanType">Loan Type</label>
+                        <select id="loanType" name="loanType" class="form-control" required>
+                            <option value="">Select Loan Type</option>
+                            <option value="Personal">Personal Loan</option>
+                            <option value="Emergency">Emergency Loan</option>
+                            <option value="Educational">Educational Loan</option>
+                            <option value="Housing">Housing Loan</option>
+                            <option value="Salary">Salary Loan</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="loanAmount">Loan Amount</label>
+                        <input type="number" id="loanAmount" name="loanAmount" class="form-control" min="1000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="term">Term (months)</label>
+                        <select id="term" name="term" class="form-control" required>
+                            <option value="">Select Term</option>
+                            <option value="3">3 months</option>
+                            <option value="6">6 months</option>
+                            <option value="12">12 months</option>
+                            <option value="24">24 months</option>
+                            <option value="36">36 months</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="interestRate">Interest Rate (%)</label>
+                        <input type="number" id="interestRate" name="interestRate" class="form-control" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="purpose">Purpose</label>
+                        <input type="text" id="purpose" name="purpose" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="monthlyPayment">Monthly Payment</label>
+                        <input type="text" id="monthlyPayment" name="monthlyPayment" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="totalPayment">Total Payment</label>
+                        <input type="text" id="totalPayment" name="totalPayment" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Submit Loan Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="loanDetailsModal" class="modal">
+        <div class="modal-content ln-details-modal">
+            <span class="close-btn">&times;</span>
+            <div class="form-header">
+                <h2>Loan Details</h2>
+            </div>
+            <div id="loanDetailsContent">
+            </div>
+            <div class="ln-payment-history">
+                <h3>Payment History</h3>
+                <table id="paymentHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Payment Date</th>
+                            <th>Amount</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ln-action-buttons">
+                <button id="makePaymentBtn" class="btn btn-primary ln-action-btn">Make Payment</button>
+                <button id="approveLoanBtn" class="btn btn-success ln-action-btn">Approve Loan</button>
+                <button id="rejectLoanBtn" class="btn btn-danger ln-action-btn">Reject Loan</button>
+                <button id="printLoanDetailsBtn" class="btn btn-secondary ln-action-btn">Print Details</button>
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="form-header">
+                <h2>Make Loan Payment</h2>
+            </div>
+            <form id="paymentForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="paymentDate">Payment Date</label>
+                        <input type="date" id="paymentDate" name="paymentDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentAmount">Payment Amount</label>
+                        <input type="number" id="paymentAmount" name="paymentAmount" class="form-control" step="0.01" min="0" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" name="paymentMethod" class="form-control" required>
+                            <option value="">Select Payment Method</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Salary Deduction">Salary Deduction</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Check">Check</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentReference">Reference Number</label>
+                        <input type="text" id="paymentReference" name="paymentReference" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="paymentNotes">Notes</label>
+                    <textarea id="paymentNotes" name="paymentNotes" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Submit Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/js/utils.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/loans.js"></script>
+    <script src="/js/appss.js"></script>
+    <script src="/js/search.js"></script>
+</body>
+</html>

@@ -31,8 +31,8 @@ function updateStats(employees, departments, attendance, payroll) {
     // Calculate attendance stats
     const presentCount = todayAttendance.filter(a => a.status === 'Present').length;
     const lateCount = todayAttendance.filter(a => a.status === 'Late').length;
-    const absentCount = employees.length - todayAttendance.length;
     const leaveCount = todayAttendance.filter(a => a.status === 'Leave').length;
+    const absentCount = employees.length - todayAttendance.length;
 
     const totalPresentElement = document.getElementById('totalPresent');
     if (totalPresentElement) {

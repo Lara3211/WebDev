@@ -9,9 +9,102 @@
 }
 
 .pr-campus-image-container {
-    margin-top: 30px; 
-    text-align: center;
-}
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        /* Payslip Styles */
+        .payslip {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border: 2px solid #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .payslip-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payslip-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .payslip-header h4 {
+            margin: 5px 0 0 0;
+            font-size: 16px;
+        }
+
+        .payslip-employee-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 15px;
+        }
+
+        .employee-details-left, .employee-details-right {
+            flex: 1;
+        }
+
+        .employee-details-right {
+            text-align: right;
+        }
+
+        .payslip-employee-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .payslip-earnings, .payslip-deductions {
+            margin-bottom: 20px;
+        }
+
+        .payslip-earnings h4, .payslip-deductions h4 {
+            background: #f5f5f5;
+            padding: 8px;
+            margin: 0 0 10px 0;
+            border: 1px solid #333;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .payslip-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .payslip-table td {
+            padding: 8px;
+            border: 1px solid #333;
+            font-size: 13px;
+        }
+
+        .payslip-table .amount {
+            text-align: right;
+            width: 150px;
+        }
+
+        .total-row {
+            background: #f9f9f9;
+        }
+
+        .net-pay-row {
+            background: #e8f5e8;
+            font-size: 16px !important;
+        }
+
+        .net-pay-row td {
+            font-size: 16px;
+            padding: 12px 8px;
+        }
 
 .pr-campus-image {
     max-width: 100%; 

@@ -1,3 +1,7 @@
+The code implements an enhanced payslip view functionality, replacing the existing placeholder function with a detailed payslip display in a modal.
+```
+
+```replit_final_file
 document.addEventListener('DOMContentLoaded', function() {
     loadPayroll();
     
@@ -256,12 +260,93 @@ function openEditPayrollForm(id) {
 
 
 
-// WALA FUNCTION --------------------------------------------------------------------
-function viewPayslip() {
-            const payrollDetailsModal = document.getElementById('payrollDetailsModal');
+function viewPayslip(id) {
+    const payrollDetailsModal = document.getElementById('payrollDetailsModal');
+    const payslipContainer = document.getElementById('payslipContainer');
+
+    if (!payrollDetailsModal || !payslipContainer) return;
+
+    const payroll = JSON.parse(localStorage.getItem('payroll')) || [];
+    const employees = JSON.parse(localStorage.getItem('employees')) || [];
+    const record = payroll.find(p => p.id === id);
+
+    if (record) {
+        const employee = employees.find(emp => emp.id === record.employeeId);
+
+        if (employee) {
+            payslipContainer.innerHTML = `
+                <div class="payslip-header">
+                    <h3>BULACAN POLYTECHNIC COLLEGE</h3>
+                    <h4>PAYSLIP</h4>
+                </div>
+
+                <div class="payslip-employee-info">
+                    <div class="employee-details-left">
+                        <p><strong>Employee Name:</strong> ${employee.name}</p>
+                        <p><strong>Employee ID:</strong> ${employee.employeeId || 'N/A'}</p>
+                        <p><strong>Department:</strong> ${employee.department}</p>
+                    </div>
+                    <div class="employee-details-right">
+                        <p><strong>Position:</strong> ${employee.position}</p>
+                        <p><strong>Pay Period:</strong> ${record.payPeriod}</p>
+                        <p><strong>Date Issued:</strong> ${formatDate(record.payDate)}</p>
+                    </div>
+                </div>
+
+                <div class="payslip-earnings">
+                    <h4>EARNINGS</h4>
+                    <table class="payslip-table">
+                        <tr>
+                            <td>Basic Salary</td>
+                            <td class="amount">${formatCurrency(record.baseSalary)}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>TOTAL EARNINGS:</strong></td>
+                            <td class="amount"><strong>${formatCurrency(record.baseSalary)}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="payslip-deductions">
+                    <h4>DEDUCTIONS</h4>
+                    <table class="payslip-table">
+                        <tr>
+                            <td>Tax</td>
+                            <td class="amount">${formatCurrency(record.deductions.tax)}</td>
+                        </tr>
+                        <tr>
+                            <td>SSS</td>
+                            <td class="amount">${formatCurrency(record.deductions.sss)}</td>
+                        </tr>
+                        <tr>
+                            <td>PhilHealth</td>
+                            <td class="amount">${formatCurrency(record.deductions.philhealth)}</td>
+                        </tr>
+                        <tr>
+                            <td>Pag-IBIG</td>
+                            <td class="amount">${formatCurrency(record.deductions.pagibig)}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>TOTAL DEDUCTIONS:</strong></td>
+                            <td class="amount"><strong>${formatCurrency(record.totalDeductions)}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="payslip-net">
+                    <table class="payslip-table">
+                        <tr class="net-pay-row">
+                            <td><strong>NET PAY:</strong></td>
+                            <td class="amount"><strong>${formatCurrency(record.netSalary)}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+
             payrollDetailsModal.style.display = 'block';
+        }
+    }
 }
-// WALA FUNCTION --------------------------------------------------------------------
 
 
 function populateEmployeeDropdown() {

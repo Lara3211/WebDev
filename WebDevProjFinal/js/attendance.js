@@ -40,13 +40,22 @@ function loadAttendance() {
             const hasTimeIn = record.timeIn && record.timeIn !== '';
             const hasTimeOut = record.timeOut && record.timeOut !== '';
 
-            let quickActionBtn = '';
+            let actionButtons = '';
             if (!hasTimeIn) {
-                quickActionBtn = `<button class="action-btn time-in-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">Time In</button>`;
+                actionButtons = `
+                    <button class="action-btn time-in-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">Time In</button>
+                    <button class="action-btn manual-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">+</button>
+                `;
             } else if (!hasTimeOut) {
-                quickActionBtn = `<button class="action-btn time-out-btn" data-employee-id="${employee.id}" data-date="${selectedDate}" data-record-id="${record.id}">Time Out</button>`;
+                actionButtons = `
+                    <button class="action-btn time-out-btn" data-employee-id="${employee.id}" data-date="${selectedDate}" data-record-id="${record.id}">Time Out</button>
+                    <button class="action-btn manual-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">+</button>
+                `;
             } else {
-                quickActionBtn = `<span class="status-complete">Complete</span>`;
+                actionButtons = `
+                    <button class="action-btn edit-btn" data-id="${record.id}">Edit</button>
+                    <button class="action-btn reset-btn" data-id="${record.id}">Reset</button>
+                `;
             }
 
             row.innerHTML = `
@@ -55,10 +64,7 @@ function loadAttendance() {
                 <td>${record.timeIn || '-'}</td>
                 <td>${record.timeOut || '-'}</td>
                 <td>${record.status}</td>
-                <td>${quickActionBtn}</td>
-                <td>
-                    <button class="action-btn manual-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">+</button>
-                </td>
+                <td>${actionButtons}</td>
             `;
         } else {
             row.innerHTML = `
@@ -69,8 +75,6 @@ function loadAttendance() {
                 <td>Absent</td>
                 <td>
                     <button class="action-btn time-in-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">Time In</button>
-                </td>
-                <td>
                     <button class="action-btn manual-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">+</button>
                 </td>
             `;
@@ -178,6 +182,14 @@ function setupAttendanceEvents() {
                 loadAttendance();
             }
         }
+
+        if (e.target.classList.contains('reset-btn') && e.target.closest('#attendanceTable')) {
+            const id = parseInt(e.target.dataset.id);
+            if (confirm('Are you sure you want to reset this attendance record?')) {
+                resetAttendance(id);
+                loadAttendance();
+            }
+        }
     });
 }
 
@@ -217,6 +229,12 @@ function openAddAttendanceForm(employeeId, date) {
         attendanceForm.elements['employeeId'].value = employeeId;
         attendanceForm.elements['employeeName'].value = employee.name;
         attendanceForm.elements['date'].value = date;
+
+        // Set the display date field
+        const displayDateField = document.getElementById('attendanceDisplayDate');
+        if (displayDateField) {
+            displayDateField.value = date;
+        }
 
         const now = new Date();
         const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
@@ -330,6 +348,19 @@ function recordTimeOut(recordId) {
 
     localStorage.setItem('attendance', JSON.stringify(attendance));
     loadAttendance();
+}
+
+function resetAttendance(id) {
+    const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+    const record = attendance.find(a => a.id === id);
+
+    if (record) {
+        record.timeIn = '';
+        record.timeOut = '';
+        record.status = 'Absent';
+    }
+
+    localStorage.setItem('attendance', JSON.stringify(attendance));
 }
 
 function markAllPresent() {

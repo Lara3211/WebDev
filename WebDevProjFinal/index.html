@@ -104,54 +104,29 @@
                         <div class="number" id="totalDepartments">0</div>
                     </div>
                     <div class="stat-card">
-                        <h3>Present Today</h3>
-                        <div class="number" id="totalPresent">0</div>
-                    </div>
-                    <div class="stat-card">
                         <h3>Next Payday</h3>
                         <div class="number" id="nextPayday">--</div>
                     </div>
                 </div>
 
-
-                <div class="ln-stats">
-                    <div class="stat-card">
-                        <div class="ln-stat-icon">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                        </div>
-                        <div class="ln-stat-info">
-                            <h3>Active Loans</h3>
-                            <div class="number" id="activeLoansCount">0</div>
-                        </div>
+                <div class="attendance-stats">
+                    <div class="stat-card attendance-present">
+                        <h3>Present</h3>
+                        <div class="number" id="totalPresent">0</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="ln-stat-icon">
-                            <i class="fas fa-money-bill-wave"></i>
-                        </div>
-                        <div class="ln-stat-info">
-                            <h3>Total Loan Amount</h3>
-                            <div class="number" id="totalLoanAmount">₱0.00</div>
-                        </div>
+                    <div class="stat-card attendance-late">
+                        <h3>Late</h3>
+                        <div class="number" id="totalLate">0</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="ln-stat-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="ln-stat-info">
-                            <h3>Pending Approvals</h3>
-                            <div class="number" id="pendingLoansCount">0</div>
-                        </div>
+                    <div class="stat-card attendance-absent">
+                        <h3>Absent</h3>
+                        <div class="number" id="totalAbsent">0</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="ln-stat-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="ln-stat-info">
-                            <h3>Completed Loans</h3>
-                            <div class="number" id="completedLoansCount">0</div>
-                        </div>
+                    <div class="stat-card attendance-leave">
+                        <h3>On Leave</h3>
+                        <div class="number" id="totalOnLeave">0</div>
                     </div>
-                </div> 
+                </div>
 
                 
 <!-- MAIN STATS --------------------------------------------------------------------->  
@@ -191,6 +166,7 @@
                     </div>
                     <table id="recentEmployeesTable">
                         <tr>
+                            <th>Employee ID</th>
                             <th>Name</th>
                             <th>Position</th>
                             <th>Department</th>

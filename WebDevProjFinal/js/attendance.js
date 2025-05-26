@@ -28,6 +28,7 @@ function loadAttendance() {
         <th>Time Out</th>
         <th>Status</th>
         <th>Actions</th>
+        <th>Manual</th>
     `;
     attendanceTable.appendChild(headerRow);
 
@@ -36,15 +37,27 @@ function loadAttendance() {
         const row = document.createElement('tr');
 
         if (record) {
+            const hasTimeIn = record.timeIn && record.timeIn !== '';
+            const hasTimeOut = record.timeOut && record.timeOut !== '';
+
+            let quickActionBtn = '';
+            if (!hasTimeIn) {
+                quickActionBtn = `<button class="action-btn time-in-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">Time In</button>`;
+            } else if (!hasTimeOut) {
+                quickActionBtn = `<button class="action-btn time-out-btn" data-employee-id="${employee.id}" data-date="${selectedDate}" data-record-id="${record.id}">Time Out</button>`;
+            } else {
+                quickActionBtn = `<span class="status-complete">Complete</span>`;
+            }
+
             row.innerHTML = `
                 <td>${employee.name}</td>
                 <td>${employee.department}</td>
                 <td>${record.timeIn || '-'}</td>
                 <td>${record.timeOut || '-'}</td>
                 <td>${record.status}</td>
+                <td>${quickActionBtn}</td>
                 <td>
-                    <button class="action-btn edit-btn" data-id="${record.id}">Edit</button>
-                    <button class="action-btn delete-btn" data-id="${record.id}">Delete</button>
+                    <button class="action-btn manual-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">+</button>
                 </td>
             `;
         } else {
@@ -55,7 +68,10 @@ function loadAttendance() {
                 <td>-</td>
                 <td>Absent</td>
                 <td>
-                    <button class="action-btn view-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">Record</button>
+                    <button class="action-btn time-in-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">Time In</button>
+                </td>
+                <td>
+                    <button class="action-btn manual-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">+</button>
                 </td>
             `;
         }
@@ -131,10 +147,23 @@ function setupAttendanceEvents() {
     }
 
     document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('view-btn') && e.target.closest('#attendanceTable')) {
+        if (e.target.classList.contains('manual-btn') && e.target.closest('#attendanceTable')) {
             const employeeId = parseInt(e.target.dataset.employeeId);
             const date = e.target.dataset.date;
             openAddAttendanceForm(employeeId, date);
+        }
+
+        if (e.target.classList.contains('time-in-btn') && e.target.closest('#attendanceTable')) {
+            const employeeId = parseInt(e.target.dataset.employeeId);
+            const date = e.target.dataset.date;
+            recordTimeIn(employeeId, date);
+        }
+
+        if (e.target.classList.contains('time-out-btn') && e.target.closest('#attendanceTable')) {
+            const employeeId = parseInt(e.target.dataset.employeeId);
+            const date = e.target.dataset.date;
+            const recordId = parseInt(e.target.dataset.recordId);
+            recordTimeOut(recordId);
         }
 
         if (e.target.classList.contains('edit-btn') && e.target.closest('#attendanceTable')) {
@@ -260,6 +289,47 @@ function validateAttendanceForm(attendanceData) {
     }
 
     return true;
+}
+
+function recordTimeIn(employeeId, date) {
+    const now = new Date();
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+    const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+    const existingRecord = attendance.find(a => a.employeeId === employeeId && a.date === date);
+
+    if (existingRecord) {
+        existingRecord.timeIn = currentTime;
+        existingRecord.status = currentTime > '08:30' ? 'Late' : 'Present';
+    } else {
+        const newRecord = {
+            id: generateId(),
+            employeeId: employeeId,
+            date: date,
+            timeIn: currentTime,
+            timeOut: '',
+            status: currentTime > '08:30' ? 'Late' : 'Present'
+        };
+        attendance.push(newRecord);
+    }
+
+    localStorage.setItem('attendance', JSON.stringify(attendance));
+    loadAttendance();
+}
+
+function recordTimeOut(recordId) {
+    const now = new Date();
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+    const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+    const record = attendance.find(a => a.id === recordId);
+
+    if (record) {
+        record.timeOut = currentTime;
+    }
+
+    localStorage.setItem('attendance', JSON.stringify(attendance));
+    loadAttendance();
 }
 
 function markAllPresent() {

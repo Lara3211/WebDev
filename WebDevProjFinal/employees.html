@@ -100,6 +100,7 @@
                     <table id="employeesTable">
                     <thead>
                         <tr>
+                            <th>Employee ID</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Position</th>
@@ -143,6 +144,10 @@
                 <h2>Add New Employee</h2>
             </div>
             <form id="addEmployeeForm">
+                <div class="form-group">
+                    <label for="employeeId">Employee ID</label>
+                    <input type="text" id="employeeIdField" name="employeeId" class="form-control" readonly>
+                </div>
                 <div class="form-group">
                     <label for="name">Full Name</label>
                     <input type="text" id="name" name="name" class="form-control" required>

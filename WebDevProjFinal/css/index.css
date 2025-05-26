@@ -19,3 +19,33 @@
             font-style: italic;
             color: #ffffff;
         }
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.attendance-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.attendance-present {
+    border-left: 4px solid #4CAF50;
+}
+
+.attendance-late {
+    border-left: 4px solid #FF9800;
+}
+
+.attendance-absent {
+    border-left: 4px solid #F44336;
+}
+
+.attendance-leave {
+    border-left: 4px solid #2196F3;
+}

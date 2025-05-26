@@ -5,24 +5,41 @@ document.addEventListener('DOMContentLoaded', function() {
     populateFormDropdowns();
 });
 
+function generateEmployeeId() {
+    const employees = JSON.parse(localStorage.getItem('employees')) || [];
+    let maxId = 2400000;
+
+    employees.forEach(emp => {
+        if (emp.employeeId) {
+            const idNumber = parseInt(emp.employeeId.replace('RE-', ''));
+            if (idNumber > maxId) {
+                maxId = idNumber;
+            }
+        }
+    });
+
+    return `RE-${(maxId + 1).toString().padStart(7, '0')}`;
+}
+
 function loadEmployees() {
     const employeesTable = document.querySelector('#employeesTable tbody');
     if (!employeesTable) return;
-    
+
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
-    
+
     employeesTable.innerHTML = '';
-    
+
     if (employees.length === 0) {
         const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="6" class="text-center">No employees found. Add your first employee using the button above.</td>';
+        emptyRow.innerHTML = '<td colspan="7" class="text-center">No employees found. Add your first employee using the button above.</td>';
         employeesTable.appendChild(emptyRow);
         return;
     }
-    
+
     employees.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${employee.employeeId || 'N/A'}</td>
             <td>${employee.name}</td>
             <td>${employee.email}</td>
             <td>${employee.position}</td>
@@ -44,24 +61,30 @@ function setupEmployeeEvents() {
     const employeeModal = document.getElementById('employeeModal');
     const employeeDetailsModal = document.getElementById('employeeDetailsModal');
     const closeModalBtns = document.querySelectorAll('.close-btn');
-    
+
     if (addEmployeeBtn) {
         addEmployeeBtn.addEventListener('click', function() {
             if (addEmployeeForm) {
                 addEmployeeForm.reset();
                 addEmployeeForm.dataset.mode = 'add';
                 addEmployeeForm.dataset.id = '';
-                
+
+                // Generate new employee ID
+                const employeeIdField = document.getElementById('employeeIdField');
+                if (employeeIdField) {
+                    employeeIdField.value = generateEmployeeId();
+                }
+
                 const modalTitle = employeeModal.querySelector('.form-header h2');
                 if (modalTitle) {
                     modalTitle.textContent = 'Add New Employee';
                 }
-                
+
                 employeeModal.style.display = 'block';
             }
         });
     }
-    
+
     closeModalBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             const modal = this.closest('.modal');
@@ -70,19 +93,20 @@ function setupEmployeeEvents() {
             }
         });
     });
-    
+
     window.addEventListener('click', function(event) {
         if (event.target.classList.contains('modal')) {
             event.target.style.display = 'none';
         }
     });
-    
+
     if (addEmployeeForm) {
         addEmployeeForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const formData = new FormData(this);
             const employeeData = {
+                employeeId: formData.get('employeeIdField'),
                 name: formData.get('name'),
                 email: formData.get('email'),
                 position: formData.get('position'),
@@ -90,36 +114,36 @@ function setupEmployeeEvents() {
                 salary: parseFloat(formData.get('salary')),
                 dateHired: formData.get('dateHired')
             };
-            
+
             if (!validateEmployeeForm(employeeData)) {
                 return;
             }
-            
+
             const mode = this.dataset.mode;
-            
+
             if (mode === 'add') {
                 addEmployee(employeeData);
             } else if (mode === 'edit') {
                 const id = parseInt(this.dataset.id);
                 editEmployee(id, employeeData);
             }
-            
+
             employeeModal.style.display = 'none';
             loadEmployees();
         });
     }
-    
+
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('view-btn')) {
             const id = parseInt(e.target.dataset.id);
             viewEmployee(id);
         }
-        
+
         if (e.target.classList.contains('edit-btn')) {
             const id = parseInt(e.target.dataset.id);
             openEditEmployeeForm(id);
         }
-        
+
         if (e.target.classList.contains('delete-btn')) {
             if (confirm('Are you sure you want to delete this employee?')) {
                 const id = parseInt(e.target.dataset.id);
@@ -135,6 +159,7 @@ function addEmployee(employeeData) {
     const id = generateId();
     employees.push({
         id: id,
+        employeeId: employeeData.employeeId,
         ...employeeData
     });
     localStorage.setItem('employees', JSON.stringify(employees));
@@ -161,17 +186,18 @@ function viewEmployee(id) {
         console.error("Employee details modal not found");
         return;
     }
-    
+
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     const employee = employees.find(emp => emp.id === id);
-    
+
     if (employee) {
         const detailsContainer = document.getElementById('employeeDetails');
-        
+
         if (detailsContainer) {
             detailsContainer.innerHTML = `
                 <div class="employee-details">
                     <h3>${employee.name}</h3>
+                    <p><strong>Employee ID:</strong> ${employee.employeeId || 'N/A'}</p>
                     <p><strong>Email:</strong> ${employee.email}</p>
                     <p><strong>Position:</strong> ${employee.position}</p>
                     <p><strong>Department:</strong> ${employee.department}</p>
@@ -183,7 +209,7 @@ function viewEmployee(id) {
         } else {
             console.error("Employee details container not found");
         }
-        
+
         employeeDetailsModal.style.display = 'block';
     }
 }
@@ -191,28 +217,33 @@ function viewEmployee(id) {
 function openEditEmployeeForm(id) {
     const employeeModal = document.getElementById('employeeModal');
     const addEmployeeForm = document.getElementById('addEmployeeForm');
-    
+
     if (!employeeModal || !addEmployeeForm) return;
-    
+
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     const employee = employees.find(emp => emp.id === id);
-    
+
     if (employee) {
+        const employeeIdField = document.getElementById('employeeIdField');
+        if (employeeIdField) {
+            employeeIdField.value = employee.employeeId || 'N/A';
+        }
+
         addEmployeeForm.elements['name'].value = employee.name;
         addEmployeeForm.elements['email'].value = employee.email;
         addEmployeeForm.elements['position'].value = employee.position;
         addEmployeeForm.elements['department'].value = employee.department;
         addEmployeeForm.elements['salary'].value = employee.salary;
         addEmployeeForm.elements['dateHired'].value = employee.dateHired;
-        
+
         addEmployeeForm.dataset.mode = 'edit';
         addEmployeeForm.dataset.id = id;
-        
+
         const modalTitle = employeeModal.querySelector('.form-header h2');
         if (modalTitle) {
             modalTitle.textContent = 'Edit Employee';
         }
-        
+
         employeeModal.style.display = 'block';
     }
 }
@@ -222,45 +253,45 @@ function validateEmployeeForm(employeeData) {
         alert('Please enter a valid name');
         return false;
     }
-    
+
     if (!employeeData.email || !isValidEmail(employeeData.email)) {
         alert('Please enter a valid email address');
         return false;
     }
-    
+
     if (!employeeData.position || employeeData.position.trim() === '') {
         alert('Please enter a valid position');
         return false;
     }
-    
+
     if (!employeeData.department || employeeData.department.trim() === '') {
         alert('Please select a department');
         return false;
     }
-    
+
     if (!employeeData.salary || isNaN(employeeData.salary) || employeeData.salary <= 0) {
         alert('Please enter a valid salary amount');
         return false;
     }
-    
+
     if (!employeeData.dateHired || employeeData.dateHired.trim() === '') {
         alert('Please enter a valid date hired');
         return false;
     }
-    
+
     return true;
 }
 
 function populateFormDropdowns() {
     const departmentSelect = document.getElementById('department');
     if (!departmentSelect) return;
-    
+
     const departments = JSON.parse(localStorage.getItem('departments')) || [];
-    
+
     while (departmentSelect.options.length > 1) {
         departmentSelect.options.remove(1);
     }
-    
+
     departments.forEach(dept => {
         const option = document.createElement('option');
         option.value = dept.name;
@@ -280,12 +311,13 @@ function initializeLocalStorage() {
         ];
         localStorage.setItem('departments', JSON.stringify(sampleDepartments));
     }
-    
+
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     if (employees.length === 0) {
         const sampleEmployees = [
             {
                 id: 1,
+                employeeId: 'RE-2400001',
                 name: 'John Doe',
                 email: 'john.doe@bpc.edu.ph',
                 position: 'Head Teacher',
@@ -295,6 +327,7 @@ function initializeLocalStorage() {
             },
             {
                 id: 2,
+                employeeId: 'RE-2400002',
                 name: 'Maria Santos',
                 email: 'maria.santos@bpc.edu.ph',
                 position: 'HR Officer',

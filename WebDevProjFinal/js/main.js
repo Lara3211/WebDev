@@ -27,6 +27,7 @@ function initializeLocalStorage() {
         const defaultEmployees = [
             {
                 id: 1,
+                employeeId: 'RE-2400001',
                 name: 'John Doe',
                 email: 'johndoe@gmail.com',
                 position: 'Faculty',
@@ -36,6 +37,7 @@ function initializeLocalStorage() {
             },
             {
                 id: 2,
+                employeeId: 'RE-2400002',
                 name: 'Josue Sy',
                 email: 'josueasy@gmail.com',
                 position: 'Staff',
@@ -45,6 +47,7 @@ function initializeLocalStorage() {
             },
             {
                 id: 3,
+                employeeId: 'RE-2400003',
                 name: 'Danah Zu',
                 email: 'danahzu@gmail.com',
                 position: 'Staff',
@@ -54,6 +57,7 @@ function initializeLocalStorage() {
             },
             {
                 id: 4,
+                employeeId: 'RE-2400004',
                 name: 'Kian Cy',
                 email: 'KianCy@gmail.com',
                 position: 'Admin',
@@ -63,6 +67,7 @@ function initializeLocalStorage() {
             },
             {
                 id: 5,
+                employeeId: 'RE-2400005',
                 name: 'Kyle Za',
                 email: 'KyleZa@gmail.com',
                 position: 'Faculty',
@@ -72,6 +77,7 @@ function initializeLocalStorage() {
             },
             {
                 id: 6,
+                employeeId: 'RE-2400006',
                 name: 'Jeje Li',
                 email: 'jejeli@gmail.com',
                 position: 'Faculty',

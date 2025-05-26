@@ -28,9 +28,30 @@ function updateStats(employees, departments, attendance, payroll) {
     const today = new Date().toISOString().split('T')[0];
     const todayAttendance = attendance.filter(a => a.date === today);
 
+    // Calculate attendance stats
+    const presentCount = todayAttendance.filter(a => a.status === 'Present').length;
+    const lateCount = todayAttendance.filter(a => a.status === 'Late').length;
+    const absentCount = employees.length - todayAttendance.length;
+    const leaveCount = todayAttendance.filter(a => a.status === 'Leave').length;
+
     const totalPresentElement = document.getElementById('totalPresent');
     if (totalPresentElement) {
-        totalPresentElement.textContent = todayAttendance.length;
+        totalPresentElement.textContent = presentCount;
+    }
+
+    const totalLateElement = document.getElementById('totalLate');
+    if (totalLateElement) {
+        totalLateElement.textContent = lateCount;
+    }
+
+    const totalAbsentElement = document.getElementById('totalAbsent');
+    if (totalAbsentElement) {
+        totalAbsentElement.textContent = absentCount;
+    }
+
+    const totalOnLeaveElement = document.getElementById('totalOnLeave');
+    if (totalOnLeaveElement) {
+        totalOnLeaveElement.textContent = leaveCount;
     }
 
     const currentDate = new Date();
@@ -69,6 +90,7 @@ function loadRecentEmployees(employees) {
 
     const headerRow = document.createElement('tr');
     headerRow.innerHTML = `
+        <th>Employee ID</th>
         <th>Name</th>
         <th>Position</th>
         <th>Department</th>
@@ -79,6 +101,7 @@ function loadRecentEmployees(employees) {
     recentEmployees.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${employee.employeeId || 'N/A'}</td>
             <td>${employee.name}</td>
             <td>${employee.position}</td>
             <td>${employee.department}</td>
@@ -259,4 +282,3 @@ function initSalaryDistributionChart() {
         }
     });
 }
-

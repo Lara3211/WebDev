@@ -521,3 +521,73 @@ function generateLoanSummaryReport(container, startDate, endDate) {
 
     container.innerHTML = reportHTML;
 }
+
+function generateAttendanceReport() {
+    const employees = JSON.parse(localStorage.getItem('employees')) || [];
+    const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+
+    const today = new Date().toISOString().split('T')[0];
+    const todayAttendance = attendance.filter(a => a.date === today);
+
+    // Calculate stats
+    let present = 0, late = 0, absent = 0, onLeave = 0;
+
+    employees.forEach(employee => {
+        const record = todayAttendance.find(a => a.employeeId === employee.id);
+        if (record) {
+            switch (record.status) {
+                case 'Present': present++; break;
+                case 'Late': late++; break;
+                case 'On Leave': onLeave++; break;
+                case 'Absent': absent++; break;
+                default: absent++;
+            }
+        } else {
+            absent++;
+        }
+    });
+
+    // Update summary cards
+    const reportPresent = document.getElementById('reportPresent');
+    const reportLate = document.getElementById('reportLate');
+    const reportAbsent = document.getElementById('reportAbsent');
+    const reportOnLeave = document.getElementById('reportOnLeave');
+
+    if (reportPresent) reportPresent.textContent = present;
+    if (reportLate) reportLate.textContent = late;
+    if (reportAbsent) reportAbsent.textContent = absent;
+    if (reportOnLeave) reportOnLeave.textContent = onLeave;
+
+    const summaryDiv = document.getElementById('attendanceSummary');
+    if (!summaryDiv) return;
+
+    summaryDiv.innerHTML = `
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Employee</th>
+                    <th>Department</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${employees.map(employee => {
+                    const record = todayAttendance.find(a => a.employeeId === employee.id);
+                    return `
+                        <tr>
+                            <td>${employee.employeeId || 'N/A'}</td>
+                            <td>${employee.name}</td>
+                            <td>${employee.department}</td>
+                            <td>${record ? record.timeIn : '-'}</td>
+                            <td>${record ? record.timeOut : '-'}</td>
+                            <td>${record ? record.status : 'Absent'}</td>
+                        </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        </table>
+    `;
+}

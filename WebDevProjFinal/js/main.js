@@ -23,7 +23,9 @@ function initSidebar() {
 }
 
 function initializeLocalStorage() {
-    if (!localStorage.getItem('employees')) {
+    const existingEmployees = JSON.parse(localStorage.getItem('employees')) || [];
+    
+    if (existingEmployees.length === 0) {
         const defaultEmployees = [
             {
                 id: 1,
@@ -87,6 +89,19 @@ function initializeLocalStorage() {
             }
         ];
         localStorage.setItem('employees', JSON.stringify(defaultEmployees));
+    } else {
+        // Update existing employees without employee IDs
+        let updated = false;
+        existingEmployees.forEach((emp, index) => {
+            if (!emp.employeeId) {
+                emp.employeeId = `RE-${(2400001 + index).toString().padStart(7, '0')}`;
+                updated = true;
+            }
+        });
+        
+        if (updated) {
+            localStorage.setItem('employees', JSON.stringify(existingEmployees));
+        }
     }
 
     if (!localStorage.getItem('departments')) {

@@ -391,7 +391,7 @@ function updateBaseSalary() {
     const employee = employees.find(emp => emp.id === selectedEmployeeId);
     
     if (employee) {
-        baseSalaryInput.value = employee.salary.toFixed(2);
+        baseSalaryInput.value = employee.salary;
 
         const tax = employee.salary * 0.12;
         taxInput.value = tax.toFixed(2);

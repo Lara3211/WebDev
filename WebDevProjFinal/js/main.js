@@ -9,12 +9,59 @@ function initSidebar() {
     const sidebar = document.querySelector('.sidebar');
     const dashboard = document.querySelector('.dashboard');
 
-    if (hamburger) {
-        hamburger.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            dashboard.classList.toggle('expanded');
+    // Create mobile navigation elements
+    if (!document.querySelector('.mobile-nav-toggle')) {
+        const mobileToggle = document.createElement('button');
+        mobileToggle.className = 'mobile-nav-toggle';
+        mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        document.body.appendChild(mobileToggle);
+
+        const mobileOverlay = document.createElement('div');
+        mobileOverlay.className = 'mobile-nav-overlay';
+        document.body.appendChild(mobileOverlay);
+
+        // Mobile navigation event listeners
+        mobileToggle.addEventListener('click', function() {
+            sidebar.classList.add('mobile-open');
+            mobileOverlay.classList.add('active');
+        });
+
+        mobileOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('mobile-open');
+            mobileOverlay.classList.remove('active');
+        });
+
+        // Close mobile nav when clicking menu items
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth <= 991) {
+                    sidebar.classList.remove('mobile-open');
+                    mobileOverlay.classList.remove('active');
+                }
+            });
         });
     }
+
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            if (window.innerWidth > 991) {
+                sidebar.classList.toggle('collapsed');
+                dashboard.classList.toggle('expanded');
+            } else {
+                sidebar.classList.toggle('mobile-open');
+                document.querySelector('.mobile-nav-overlay').classList.toggle('active');
+            }
+        });
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 991) {
+            sidebar.classList.remove('mobile-open');
+            document.querySelector('.mobile-nav-overlay').classList.remove('active');
+        }
+    });
 
     if (window.innerWidth <= 991) {
         sidebar.classList.add('collapsed');

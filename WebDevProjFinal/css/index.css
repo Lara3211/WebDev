@@ -4,7 +4,7 @@
             margin-top: 30px;
             text-align: center;
         }
-        
+
         .id-banner-image {
             max-width: 100%;
             height: auto;
@@ -13,7 +13,7 @@
             object-fit: cover;
             transition: all 0.3s ease-in-out;
         }
-        
+
         .id-banner-caption {
             margin-top: 10px;
             font-style: italic;
@@ -30,8 +30,26 @@
 .attendance-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 30px;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1200px) {
+    .attendance-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .attendance-stats {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .attendance-stats .stat-card {
+        padding: 1rem;
+    }
 }
 
 .attendance-present {

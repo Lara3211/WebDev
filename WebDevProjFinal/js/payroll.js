@@ -43,9 +43,9 @@ function loadPayroll() {
                 <td>${employee.name}</td>
                 <td>${record.payPeriod}</td>
                 <td>${formatDate(record.payDate)}</td>
-                <td>${formatCurrency(record.baseSalary)}</td>
-                <td>${formatCurrency(record.totalDeductions)}</td>
-                <td>${formatCurrency(record.netSalary)}</td>
+                <td>₱${record.baseSalary.toFixed(2)}</td>
+                <td>₱${record.totalDeductions.toFixed(2)}</td>
+                <td>₱${record.netSalary.toFixed(2)}</td>
                 <td>
                     <button class="action-btn view-btn" data-id="${record.id}">View</button>
                     <button class="action-btn edit-btn" data-id="${record.id}">Edit</button>
@@ -191,7 +191,10 @@ function openGeneratePayrollForm() {
     const payrollModal = document.getElementById('payrollModal');
     const payrollForm = document.getElementById('payrollForm');
     
-    if (!payrollModal || !payrollForm) return;
+    if (!payrollModal || !payrollForm) {
+        console.error('Payroll modal or form not found');
+        return;
+    }
     
     payrollForm.reset();
 
@@ -201,11 +204,16 @@ function openGeneratePayrollForm() {
     const currentMonth = now.toLocaleString('default', { month: 'long' });
     const currentYear = now.getFullYear();
     
-    const payPeriod = `${currentMonth} ${currentYear}`;
+    // Add cut-off indication
+    const payPeriod = `${currentMonth} ${currentYear} (Cut-off: 1-15)`;
     const payDate = `${currentYear}-${(now.getMonth() + 1).toString().padStart(2, '0')}-15`;
     
-    payrollForm.elements['payPeriod'].value = payPeriod;
-    payrollForm.elements['payDate'].value = payDate;
+    if (payrollForm.elements['payPeriod']) {
+        payrollForm.elements['payPeriod'].value = payPeriod;
+    }
+    if (payrollForm.elements['payDate']) {
+        payrollForm.elements['payDate'].value = payDate;
+    }
     
     payrollForm.dataset.mode = 'add';
     payrollForm.dataset.id = '';
@@ -215,10 +223,10 @@ function openGeneratePayrollForm() {
         modalTitle.textContent = 'Generate Payroll';
     }
     
-    payrollForm.elements['tax'].value = '';
-    payrollForm.elements['sss'].value = '1200';
-    payrollForm.elements['philhealth'].value = '400';
-    payrollForm.elements['pagibig'].value = '200';
+    if (payrollForm.elements['tax']) payrollForm.elements['tax'].value = '';
+    if (payrollForm.elements['sss']) payrollForm.elements['sss'].value = '1200.00';
+    if (payrollForm.elements['philhealth']) payrollForm.elements['philhealth'].value = '400.00';
+    if (payrollForm.elements['pagibig']) payrollForm.elements['pagibig'].value = '200.00';
     
     updateBaseSalary();
     
@@ -298,11 +306,11 @@ function viewPayslip(id) {
                     <table class="payslip-table">
                         <tr>
                             <td>Basic Salary</td>
-                            <td class="amount">${formatCurrency(record.baseSalary)}</td>
+                            <td class="amount">₱${record.baseSalary.toFixed(2)}</td>
                         </tr>
                         <tr class="total-row">
                             <td><strong>TOTAL EARNINGS:</strong></td>
-                            <td class="amount"><strong>${formatCurrency(record.baseSalary)}</strong></td>
+                            <td class="amount"><strong>₱${record.baseSalary.toFixed(2)}</strong></td>
                         </tr>
                     </table>
                 </div>
@@ -312,23 +320,23 @@ function viewPayslip(id) {
                     <table class="payslip-table">
                         <tr>
                             <td>Tax</td>
-                            <td class="amount">${formatCurrency(record.deductions.tax)}</td>
+                            <td class="amount">₱${record.deductions.tax.toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td>SSS</td>
-                            <td class="amount">${formatCurrency(record.deductions.sss)}</td>
+                            <td class="amount">₱${record.deductions.sss.toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td>PhilHealth</td>
-                            <td class="amount">${formatCurrency(record.deductions.philhealth)}</td>
+                            <td class="amount">₱${record.deductions.philhealth.toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td>Pag-IBIG</td>
-                            <td class="amount">${formatCurrency(record.deductions.pagibig)}</td>
+                            <td class="amount">₱${record.deductions.pagibig.toFixed(2)}</td>
                         </tr>
                         <tr class="total-row">
                             <td><strong>TOTAL DEDUCTIONS:</strong></td>
-                            <td class="amount"><strong>${formatCurrency(record.totalDeductions)}</strong></td>
+                            <td class="amount"><strong>₱${record.totalDeductions.toFixed(2)}</strong></td>
                         </tr>
                     </table>
                 </div>
@@ -337,7 +345,7 @@ function viewPayslip(id) {
                     <table class="payslip-table">
                         <tr class="net-pay-row">
                             <td><strong>NET PAY:</strong></td>
-                            <td class="amount"><strong>${formatCurrency(record.netSalary)}</strong></td>
+                            <td class="amount"><strong>₱${record.netSalary.toFixed(2)}</strong></td>
                         </tr>
                     </table>
                 </div>
@@ -383,7 +391,7 @@ function updateBaseSalary() {
     const employee = employees.find(emp => emp.id === selectedEmployeeId);
     
     if (employee) {
-        baseSalaryInput.value = employee.salary;
+        baseSalaryInput.value = employee.salary.toFixed(2);
 
         const tax = employee.salary * 0.12;
         taxInput.value = tax.toFixed(2);

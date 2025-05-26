@@ -28,7 +28,6 @@ function loadAttendance() {
         <th>Time Out</th>
         <th>Status</th>
         <th>Actions</th>
-        <th>Manual</th>
     `;
     attendanceTable.appendChild(headerRow);
 
@@ -55,6 +54,7 @@ function loadAttendance() {
                 actionButtons = `
                     <button class="action-btn edit-btn" data-id="${record.id}">Edit</button>
                     <button class="action-btn reset-btn" data-id="${record.id}">Reset</button>
+                    <button class="action-btn manual-btn" data-employee-id="${employee.id}" data-date="${selectedDate}">+</button>
                 `;
             }
 

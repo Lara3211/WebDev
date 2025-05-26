@@ -157,11 +157,17 @@ function setupEmployeeEvents() {
 function addEmployee(employeeData) {
     const employees = JSON.parse(localStorage.getItem('employees')) || [];
     const id = generateId();
-    employees.push({
+    const newEmployee = {
         id: id,
         employeeId: employeeData.employeeId,
-        ...employeeData
-    });
+        name: employeeData.name,
+        email: employeeData.email,
+        position: employeeData.position,
+        department: employeeData.department,
+        salary: employeeData.salary,
+        dateHired: employeeData.dateHired
+    };
+    employees.push(newEmployee);
     localStorage.setItem('employees', JSON.stringify(employees));
 }
 
@@ -201,7 +207,7 @@ function viewEmployee(id) {
                     <p><strong>Email:</strong> ${employee.email}</p>
                     <p><strong>Position:</strong> ${employee.position}</p>
                     <p><strong>Department:</strong> ${employee.department}</p>
-                    <p><strong>Salary:</strong> ${formatCurrency(employee.salary)}</p>
+                    <p><strong>Salary:</strong> ₱${employee.salary.toFixed(2)}</p>
                     <p><strong>Date Hired:</strong> ${formatDate(employee.dateHired)}</p>
                     <p><strong>Years of Service:</strong> ${calculateYearsOfService(employee.dateHired)} years</p>
                 </div>
